@@ -37,7 +37,7 @@ class block_ajaxforms extends block_base {
      * @return stdClass The block contents.
      */
     public function get_content() {
-        global $OUTPUT;
+        global $OUTPUT, $PAGE, $COURSE;
 
         if ($this->content !== null) {
             return $this->content;
@@ -60,6 +60,8 @@ class block_ajaxforms extends block_base {
             $this->content->text = $text;
         }
 
+        $params = ['courseid' => $COURSE->id];
+        $PAGE->requires->js_call_amd('block_ajaxforms/formhandler', 'init', [$params]);
         return $this->content;
     }
 
