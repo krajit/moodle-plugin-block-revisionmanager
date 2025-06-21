@@ -37,6 +37,7 @@ class block_ajaxforms extends block_base {
      * @return stdClass The block contents.
      */
     public function get_content() {
+        global $OUTPUT;
 
         if ($this->content !== null) {
             return $this->content;
@@ -55,7 +56,7 @@ class block_ajaxforms extends block_base {
         if (!empty($this->config->text)) {
             $this->content->text = $this->config->text;
         } else {
-            $text = 'Please define the content text in /blocks/ajaxforms/block_ajaxforms.php.';
+            $text = $OUTPUT->render_from_template('block_ajaxforms/learningtracker',[]);
             $this->content->text = $text;
         }
 
