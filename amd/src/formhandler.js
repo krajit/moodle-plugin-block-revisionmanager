@@ -25,8 +25,27 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
                 
             }
 
+            function loadExistingData() {
+                const pageurl = window.location.pathname + window.location.search;
+
+                Ajax.call([{
+                    methodname: 'block_ajaxforms_get_entry',
+                    args: { 
+                        pageurl: pageurl,
+                        courseid: params.courseid
+                     },
+                    done: function(data) {
+                        if (data.nextreview) {
+                            $('#nextReview').val(data.nextreview);
+                        }
+                    },
+                    fail: Notification.exception
+                }]);
+            }
+
             // Attach listeners for autosave
             $('#nextReview').on('input change', saveData);
+            loadExistingData();
         }
     };
 });
