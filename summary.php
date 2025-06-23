@@ -42,6 +42,18 @@ if (isguestuser()) {
     throw new moodle_exception('noguest');
 }
 
+$homenode = $PAGE->navigation->add(
+    get_string('pluginname', 'block_ajaxforms'),
+    new moodle_url('/blocks/ajaxforms/summary.php')
+);
+
+$allmessagesnode = $homenode->add(
+   get_string('summary', 'block_ajaxforms'),
+   $url
+);
+
+$allmessagesnode->make_active();
+
 echo $OUTPUT->header();
 
 

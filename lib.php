@@ -15,16 +15,29 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Plugin strings are defined here.
+ * Plugin version and other meta-data are defined here.
  *
  * @package     block_ajaxforms
- * @category    string
  * @copyright   2025 Your Name <you@example.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+function block_ajaxforms_extend_navigation_frontpage(navigation_node $frontpage) {
+    if (isloggedin() && !isguestuser()) {
+        $frontpage->add(
+            get_string('navigationlabel', 'block_ajaxforms'),
+            new moodle_url('/blocks/ajaxforms/summary.php'),
+            navigation_node::TYPE_CUSTOM,
+        );
+    }
+}
 
-$string['pluginname'] = 'Ajax Form Blocks For Testing';
-$string['navigationlabel'] = 'Revision Table';
-$string['summary'] = 'Revision Summary Table';
+function block_ajaxforms_extend_navigation_course(navigation_node $coursenode, stdClass $course, context_course $context) {
+    if (isloggedin() && !isguestuser()) {
+        $coursenode->add(
+            get_string('navigationlabel', 'block_ajaxforms'),
+            new moodle_url('/blocks/ajaxforms/summary.php', ['courseid' => $course->id]),
+            navigation_node::TYPE_CUSTOM
+        );
+    }
+}

@@ -21,6 +21,7 @@
  * @copyright   2025 Your Name <you@example.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 class block_ajaxforms extends block_base {
 
     /**
