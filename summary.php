@@ -35,6 +35,8 @@ $PAGE->set_title(get_string('pluginname', 'block_ajaxforms'));
 $PAGE->set_heading(get_string('summary', 'block_ajaxforms'));
 
 require_login();
+$filtercourseid = optional_param('courseid', 0, PARAM_INT);
+
 
 if (isguestuser()) {
     throw new moodle_exception('noguest');
@@ -53,16 +55,22 @@ $table = new block_ajaxforms\pageslist($USER->id);
 //     true);
 
 $userid = (int) $USER->id;  // Always cast to int for safety
+$where = "m.userid = $userid";
+if ($filtercourseid > 0) {
+    $where .= " AND m.courseid = $filtercourseid";
+}
+
 $table->set_sql("m.id, m.courseid, m.timemodified, m.userid, m.pageurl, m.nextreview,
      c.shortname AS coursename {$userfieldssql->selects}",
     "{block_ajaxforms_entries} m
      LEFT JOIN {user} u ON u.id = m.userid
      LEFT JOIN {course} c ON c.id = m.courseid",
-     "m.userid = $userid"
+     $where
     );
 
 $table->sortable(true, 'nextreview', SORT_DESC);
-$table->define_baseurl("$CFG->wwwroot/blocks/ajaxforms/summary.php");
+//$table->define_baseurl("$CFG->wwwroot/blocks/ajaxforms/summary.php");
+$table->define_baseurl(new moodle_url('/blocks/ajaxforms/summary.php', ['courseid' => $filtercourseid]));
 $table->out(40, true);
 
 echo $OUTPUT->footer();
