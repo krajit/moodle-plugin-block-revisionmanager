@@ -52,15 +52,17 @@ $table = new block_ajaxforms\pageslist($USER->id);
 //     "{block_ajaxforms_entries} m LEFT JOIN {user} u ON u.id = m.userid" ,
 //     true);
 
+$userid = (int) $USER->id;  // Always cast to int for safety
 $table->set_sql("m.id, m.courseid, m.timemodified, m.userid, m.pageurl, m.nextreview,
      c.shortname AS coursename {$userfieldssql->selects}",
     "{block_ajaxforms_entries} m
      LEFT JOIN {user} u ON u.id = m.userid
      LEFT JOIN {course} c ON c.id = m.courseid",
-     true);
+     "m.userid = $userid"
+    );
 
 $table->sortable(true, 'nextreview', SORT_DESC);
-$table->define_baseurl("$CFG->wwwroot/local/ajaxforms/summary.php");
+$table->define_baseurl("$CFG->wwwroot/blocks/ajaxforms/summary.php");
 $table->out(40, true);
 
 echo $OUTPUT->footer();

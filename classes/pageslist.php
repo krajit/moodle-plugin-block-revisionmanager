@@ -36,32 +36,30 @@ class pageslist extends \table_sql {
     public function __construct($uniqueid) {
         parent::__construct($uniqueid);
         // Define the list of columns to show.
-        $columns = ['userid','courseid', 'pageurl','nextreview' ,'timemodified',];
+        $columns = ['courseid', 'pageurl','nextreview'];
         $this->define_columns($columns);
 
         // Define the titles of columns to show in header.
         $headers = [
-            get_string('user'),
             get_string('course'),
-            get_string('pageurl'),
-            get_string('nextreview'),
-            get_string('timemodified'),
+            'Page URL',
+            'Next Review',
         ];
         $this->define_headers($headers);
     }
 
-    /**
-     * Display the user
-     *
-     * @param stdClass $row - The row of data
-     * @return string Link to user profile
-     */
-    public function col_userid($row) {
-        return \html_writer::link(
-            new \moodle_url('/user/view.php',
-            ['id' => $row->userid]), fullname($row)
-        );
-    }
+    // /**
+    //  * Display the user
+    //  *
+    //  * @param stdClass $row - The row of data
+    //  * @return string Link to user profile
+    //  */
+    // public function col_userid($row) {
+    //     return \html_writer::link(
+    //         new \moodle_url('/user/view.php',
+    //         ['id' => $row->userid]), fullname($row)
+    //     );
+    // }
 
     /**
      * Display the user
@@ -73,17 +71,6 @@ class pageslist extends \table_sql {
         return $row->coursename;
     }
 
-
-    /**
-     * Display a human-friendly date
-     *
-     * @param stdClass $row - The row of data
-     * @return string Formatted date
-     */
-    public function col_timemodified($row) {
-        return userdate($row->timemodified);
-    }
-
      /**
      * Display a human-friendly date
      *
@@ -91,7 +78,7 @@ class pageslist extends \table_sql {
      * @return string Formatted date
      */
     public function col_nextreview($row) {
-        return userdate($row->timemodified);
+        return userdate($row->nextreview, '%B %d');
     }
 
     public function col_pageurl($row) {
