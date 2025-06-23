@@ -23,7 +23,14 @@
  */
 
 function block_ajaxforms_extend_navigation_frontpage(navigation_node $frontpage) {
-    if (isloggedin() && !isguestuser()) {
+    global $DB, $USER;
+    // Check if the block is present in the course.
+    $hasblock = $DB->record_exists('block_instances', [
+        'blockname' => 'ajaxforms',
+    ]);
+
+
+    if (isloggedin() && !isguestuser() && $hasblock) {
         $frontpage->add(
             get_string('navigationlabel', 'block_ajaxforms'),
             new moodle_url('/blocks/ajaxforms/summary.php'),
@@ -33,11 +40,24 @@ function block_ajaxforms_extend_navigation_frontpage(navigation_node $frontpage)
 }
 
 function block_ajaxforms_extend_navigation_course(navigation_node $coursenode, stdClass $course, context_course $context) {
-    if (isloggedin() && !isguestuser()) {
+    global $DB, $USER;
+
+    // Check if the block is present in the course.
+    $hasblock = $DB->record_exists('block_instances', [
+        'blockname' => 'ajaxforms',
+        'parentcontextid' => $context->id,
+    ]);
+
+    
+    if ($hasblock && isloggedin() && !isguestuser()) {
+        $url = new moodle_url('/blocks/ajaxforms/summary.php', ['courseid' => $course->id]);
         $coursenode->add(
             get_string('navigationlabel', 'block_ajaxforms'),
-            new moodle_url('/blocks/ajaxforms/summary.php', ['courseid' => $course->id]),
-            navigation_node::TYPE_CUSTOM
+            $url,
+            navigation_node::TYPE_CUSTOM,
+            null,
+            null,
+            new pix_icon('i/report', '') // optional icon
         );
     }
 }

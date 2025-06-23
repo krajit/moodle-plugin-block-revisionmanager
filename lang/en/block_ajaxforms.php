@@ -26,5 +26,5 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['pluginname'] = 'Ajax Form Blocks For Testing';
-$string['navigationlabel'] = 'Revision Table';
+$string['navigationlabel'] = 'Revision Dashboard';
 $string['summary'] = 'Revision Summary Table';
