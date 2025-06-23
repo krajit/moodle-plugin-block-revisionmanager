@@ -23,16 +23,28 @@
  */
 
 require('../../config.php');
+global $OUTPUT, $DB;
 
-global $OUTPUT;
+// Determine course context (if any).
+$courseid = optional_param('courseid', 0, PARAM_INT);
+$course = null;
+$coursecontext = null;
+$inacourse = false;
 
-$url = new moodle_url('/blocks/ajaxforms/summary.php', []);
-$context = context_system::instance();
-$PAGE->set_context($context);
-$PAGE->set_url($url);
-$PAGE->set_pagelayout('report');
+if ($courseid > 0 && ($course = $DB->get_record('course', ['id' => $courseid], '*', IGNORE_MISSING))) {
+    $coursecontext = context_course::instance($course->id);
+    $PAGE->set_context($coursecontext);
+    $PAGE->set_pagelayout('incourse');
+    $PAGE->set_heading(format_string($course->fullname, true, ['context' => $coursecontext]));
+    $inacourse = true;
+} else {
+    $PAGE->set_context(context_system::instance());
+    $PAGE->set_pagelayout('report');
+    $PAGE->set_heading(get_string('summary', 'block_ajaxforms'));
+}
+
+$PAGE->set_url(new moodle_url('/blocks/ajaxforms/summary.php', ['courseid' => $courseid]));
 $PAGE->set_title(get_string('pluginname', 'block_ajaxforms'));
-$PAGE->set_heading(get_string('summary', 'block_ajaxforms'));
 
 require_login();
 $filtercourseid = optional_param('courseid', 0, PARAM_INT);
@@ -42,17 +54,17 @@ if (isguestuser()) {
     throw new moodle_exception('noguest');
 }
 
-$homenode = $PAGE->navigation->add(
-    get_string('pluginname', 'block_ajaxforms'),
-    new moodle_url('/blocks/ajaxforms/summary.php')
-);
+// $homenode = $PAGE->navigation->add(
+//     get_string('pluginname', 'block_ajaxforms'),
+//     new moodle_url('/blocks/ajaxforms/summary.php')
+// );
 
-$allmessagesnode = $homenode->add(
-   get_string('summary', 'block_ajaxforms'),
-   $url
-);
+// $allmessagesnode = $homenode->add(
+//    get_string('summary', 'block_ajaxforms'),
+//    $url
+// );
 
-$allmessagesnode->make_active();
+// $allmessagesnode->make_active();
 
 echo $OUTPUT->header();
 
