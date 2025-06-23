@@ -61,7 +61,10 @@ class block_ajaxforms extends block_base {
             $this->content->text = $text;
         }
 
-        $params = ['courseid' => $COURSE->id];
+        $params = [
+            'courseid' => $COURSE->id,
+            'pagetitle' => $PAGE->title
+        ];
         $PAGE->requires->js_call_amd('block_ajaxforms/formhandler', 'init', [$params]);
         return $this->content;
     }
