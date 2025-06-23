@@ -15,7 +15,8 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
                     args: {
                         nextreview: date,
                         pageurl: pageurl,
-                        courseid: params.courseid
+                        courseid: params.courseid,
+                        pagetitle: params.pagetitle,
                     },
                     done: function(response) {
                         window.console.log('Saved:', response.status);

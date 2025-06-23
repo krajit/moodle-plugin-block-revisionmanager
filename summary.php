@@ -84,7 +84,7 @@ if ($filtercourseid > 0) {
     $where .= " AND m.courseid = $filtercourseid";
 }
 
-$table->set_sql("m.id, m.courseid, m.timemodified, m.userid, m.pageurl, m.nextreview,
+$table->set_sql("m.id, m.courseid, m.timemodified, m.userid, m.pageurl, m.nextreview, m.pagetitle,
      c.shortname AS coursename {$userfieldssql->selects}",
     "{block_ajaxforms_entries} m
      LEFT JOIN {user} u ON u.id = m.userid

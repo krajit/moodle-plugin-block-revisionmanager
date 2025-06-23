@@ -16,10 +16,12 @@ class save_entry extends external_api {
             'nextreview' => new external_value(PARAM_TEXT, 'Next review date (Y-m-d)'),
             'pageurl' => new external_value(PARAM_RAW, 'Page URL'),
             'courseid' => new external_value(PARAM_INT, 'Course ID'),
+            'pagetitle' => new external_value(PARAM_TEXT, 'Page Title'),
+
         ]);
     }
 
-    public static function execute($nextreview, $pageurl,$courseid) {
+    public static function execute($nextreview, $pageurl,$courseid, $pagetitle) {
         error_log("DEBUG: save_entry called with $nextreview, $pageurl");
 
         global $USER, $DB;
@@ -29,7 +31,8 @@ class save_entry extends external_api {
         self::validate_parameters(self::execute_parameters(), [
             'nextreview' => $nextreview,
             'pageurl' => $pageurl,
-            'courseid' => $courseid
+            'courseid' => $courseid,
+            'pagetitle' => $pagetitle
         ]);
 
         $timestamp = strtotime($nextreview);
@@ -42,6 +45,7 @@ class save_entry extends external_api {
         $record->nextreview = $timestamp;
         $record->pageurl = $pageurl;
         $record->timemodified = time();
+        $record->pagetitle = $pagetitle;
 
         if ($existing) {
             $record->id = $existing->id;

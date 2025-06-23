@@ -83,7 +83,7 @@ class pageslist extends \table_sql {
 
     public function col_pageurl($row) {
         return \html_writer::link(
-            new \moodle_url($row->pageurl,[]),$row->pageurl);
+            new \moodle_url($row->pageurl,[]), $row->pagetitle);
     }
 
 
