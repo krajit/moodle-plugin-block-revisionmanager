@@ -25,6 +25,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['pluginname'] = 'Active Recalling Revision Manager';
+$string['pluginname'] = 'Revision Manager';
 $string['navigationlabel'] = 'Revision Dashboard';
 $string['summary'] = 'Revision Summary Table';
