@@ -46,6 +46,12 @@ if ($courseid > 0 && ($course = $DB->get_record('course', ['id' => $courseid], '
 $PAGE->set_url(new moodle_url('/blocks/ajaxforms/summary.php', ['courseid' => $courseid]));
 $PAGE->set_title(get_string('pluginname', 'block_ajaxforms'));
 
+if ($inacourse) {
+    navigation_node::override_active_url(
+        new moodle_url('/course/view.php', ['id' => $course->id])
+    );
+}
+
 require_login();
 $filtercourseid = optional_param('courseid', 0, PARAM_INT);
 
