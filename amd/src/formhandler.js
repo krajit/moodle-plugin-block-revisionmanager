@@ -8,7 +8,7 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
                 if (!date) {
                     // Call delete endpoint when date is cleared
                     Ajax.call([{
-                        methodname: 'block_ajaxforms_delete_entry',
+                        methodname: 'block_revisionmanager_delete_entry',
                         args: {
                             pageurl: pageurl,
                             courseid: params.courseid
@@ -21,7 +21,7 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
                 } else {
                     // Save date normally
                     Ajax.call([{
-                        methodname: 'block_ajaxforms_save_entry',
+                        methodname: 'block_revisionmanager_save_entry',
                         args: {
                             nextreview: date,
                             pageurl: pageurl,
@@ -40,7 +40,7 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
                 const pageurl = window.location.pathname + window.location.search;
 
                 Ajax.call([{
-                    methodname: 'block_ajaxforms_get_entry',
+                    methodname: 'block_revisionmanager_get_entry',
                     args: { 
                         pageurl: pageurl,
                         courseid: params.courseid

@@ -15,21 +15,21 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Block ajaxforms is defined here.
+ * Block revisionmanager is defined here.
  *
- * @package     block_ajaxforms
+ * @package     block_revisionmanager
  * @copyright   2025 Your Name <you@example.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-class block_ajaxforms extends block_base {
+class block_revisionmanager extends block_base {
 
     /**
      * Initializes class member variables.
      */
     public function init() {
         // Needed by Moodle to differentiate between blocks.
-        $this->title = get_string('pluginname', 'block_ajaxforms');
+        $this->title = get_string('pluginname', 'block_revisionmanager');
     }
 
     /**
@@ -55,7 +55,7 @@ class block_ajaxforms extends block_base {
         // $this->content->footer = '';
 
          // Add a footer gear icon linking to course plugin page.
-        $url = new moodle_url('/blocks/ajaxforms/summary.php', ['courseid' => $COURSE->id]);
+        $url = new moodle_url('/blocks/revisionmanager/summary.php', ['courseid' => $COURSE->id]);
 
         $gearicon = $OUTPUT->pix_icon('i/settings', get_string('settings'));
         $this->content->footer = html_writer::link($url, "Course Review Dashboard", []);
@@ -63,7 +63,7 @@ class block_ajaxforms extends block_base {
         if (!empty($this->config->text)) {
             $this->content->text = $this->config->text;
         } else {
-            $text = $OUTPUT->render_from_template('block_ajaxforms/learningtracker',[]);
+            $text = $OUTPUT->render_from_template('block_revisionmanager/learningtracker',[]);
             $this->content->text = $text;
         }
 
@@ -71,7 +71,7 @@ class block_ajaxforms extends block_base {
             'courseid' => $COURSE->id,
             'pagetitle' => $PAGE->title
         ];
-        $PAGE->requires->js_call_amd('block_ajaxforms/formhandler', 'init', [$params]);
+        $PAGE->requires->js_call_amd('block_revisionmanager/formhandler', 'init', [$params]);
         return $this->content;
     }
 
@@ -84,7 +84,7 @@ class block_ajaxforms extends block_base {
 
         // Load user defined title and make sure it's never empty.
         if (empty($this->config->title)) {
-            $this->title = get_string('pluginname', 'block_ajaxforms');
+            $this->title = get_string('pluginname', 'block_revisionmanager');
         } else {
             $this->title = $this->config->title;
         }

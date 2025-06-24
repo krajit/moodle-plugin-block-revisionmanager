@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="blocks/ajaxforms/db" VERSION="20250623" COMMENT="XMLDB file for Moodle blocks/ajaxforms"
+<XMLDB PATH="blocks/revisionmanager/db" VERSION="20250623" COMMENT="XMLDB file for Moodle blocks/revisionmanager"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
   <TABLES>
-    <TABLE NAME="block_ajaxforms_entries" COMMENT="Stores ajaxforms data per page and user">
+    <TABLE NAME="block_revisionmanager_entries" COMMENT="Stores revisionmanager data per page and user">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>

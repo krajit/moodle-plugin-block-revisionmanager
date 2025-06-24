@@ -1,5 +1,5 @@
 <?php
-namespace block_ajaxforms\external;
+namespace block_revisionmanager\external;
 
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/externallib.php');
@@ -31,7 +31,7 @@ class get_entry extends external_api {
         ]);
 
 
-        $record = $DB->get_record('block_ajaxforms_entries', ['userid' => $USER->id, 'pageurl' => $pageurl, 'courseid' => $courseid]);
+        $record = $DB->get_record('block_revisionmanager_entries', ['userid' => $USER->id, 'pageurl' => $pageurl, 'courseid' => $courseid]);
 
         if (!$record) {
             return [

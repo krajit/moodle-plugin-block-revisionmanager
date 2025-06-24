@@ -17,14 +17,14 @@
 /**
  * Summary table page for AJAX Forms block.
  *
- * @package   block_ajaxforms
+ * @package   block_revisionmanager
  * @copyright 2024 YOUR NAME
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require('../../config.php');
 
-use block_ajaxforms\pageslist;
+use block_revisionmanager\pageslist;
 
 global $DB, $PAGE, $OUTPUT, $USER;
 
@@ -43,12 +43,12 @@ if ($course) {
 } else {
     $PAGE->set_context(context_system::instance());
     $PAGE->set_pagelayout('report');
-//    $PAGE->set_heading(get_string('summary', 'block_ajaxforms'));
+//    $PAGE->set_heading(get_string('summary', 'block_revisionmanager'));
 }
 
 // Page URL and metadata.
-$PAGE->set_url(new moodle_url('/blocks/ajaxforms/summary.php', ['courseid' => $courseid]));
-$PAGE->set_title(get_string('pluginname', 'block_ajaxforms'));
+$PAGE->set_url(new moodle_url('/blocks/revisionmanager/summary.php', ['courseid' => $courseid]));
+$PAGE->set_title(get_string('pluginname', 'block_revisionmanager'));
 
 require_login();
 if (isguestuser()) {
@@ -57,7 +57,7 @@ if (isguestuser()) {
 
 // Output starts.
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('summary', 'block_ajaxforms'));
+echo $OUTPUT->heading(get_string('summary', 'block_revisionmanager'));
 
 // Get user fields for display.
 $userfields = \core_user\fields::for_name()->with_identity($PAGE->context);
@@ -79,7 +79,7 @@ if ($course) {
 $table->set_sql(
     "m.id, m.courseid, m.timemodified, m.userid, m.pageurl, m.nextreview, m.pagetitle,
      c.shortname AS coursename {$userfieldssql->selects}",
-    "{block_ajaxforms_entries} m
+    "{block_revisionmanager_entries} m
      LEFT JOIN {user} u ON u.id = m.userid
      LEFT JOIN {course} c ON c.id = m.courseid",
     $where,

@@ -17,42 +17,42 @@
 /**
  * Plugin version and other meta-data are defined here.
  *
- * @package     block_ajaxforms
+ * @package     block_revisionmanager
  * @copyright   2025 Your Name <you@example.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-function block_ajaxforms_extend_navigation_frontpage(navigation_node $frontpage) {
+function block_revisionmanager_extend_navigation_frontpage(navigation_node $frontpage) {
     global $DB, $USER;
     // Check if the block is present in the course.
     $hasblock = $DB->record_exists('block_instances', [
-        'blockname' => 'ajaxforms',
+        'blockname' => 'revisionmanager',
     ]);
 
 
     if (isloggedin() && !isguestuser() && $hasblock) {
         $frontpage->add(
-            get_string('navigationlabel', 'block_ajaxforms'),
-            new moodle_url('/blocks/ajaxforms/summary.php'),
+            get_string('navigationlabel', 'block_revisionmanager'),
+            new moodle_url('/blocks/revisionmanager/summary.php'),
             navigation_node::TYPE_CUSTOM,
         );
     }
 }
 
-function block_ajaxforms_extend_navigation_course(navigation_node $coursenode, stdClass $course, context_course $context) {
+function block_revisionmanager_extend_navigation_course(navigation_node $coursenode, stdClass $course, context_course $context) {
     global $DB, $USER;
 
     // Check if the block is present in the course.
     $hasblock = $DB->record_exists('block_instances', [
-        'blockname' => 'ajaxforms',
+        'blockname' => 'revisionmanager',
         'parentcontextid' => $context->id,
     ]);
 
     
     if ($hasblock && isloggedin() && !isguestuser()) {
-        $url = new moodle_url('/blocks/ajaxforms/summary.php', ['courseid' => $course->id]);
+        $url = new moodle_url('/blocks/revisionmanager/summary.php', ['courseid' => $course->id]);
         $coursenode->add(
-            get_string('navigationlabel', 'block_ajaxforms'),
+            get_string('navigationlabel', 'block_revisionmanager'),
             $url,
             navigation_node::TYPE_CUSTOM,
             null,

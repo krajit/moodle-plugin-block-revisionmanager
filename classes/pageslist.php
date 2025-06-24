@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace block_ajaxforms;
+namespace block_revisionmanager;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -23,7 +23,7 @@ require_once("$CFG->libdir/tablelib.php");
 /**
  * Class messageslist
  *
- * @package    local_ajaxforms
+ * @package    local_revisionmanager
  * @copyright  2024 YOUR NAME <your@email.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

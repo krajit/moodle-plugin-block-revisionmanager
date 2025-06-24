@@ -1,5 +1,5 @@
 <?php
-namespace block_ajaxforms\external;
+namespace block_revisionmanager\external;
 
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/externallib.php');
@@ -26,7 +26,7 @@ class delete_entry extends external_api {
             'courseid' => $courseid
         ]);
 
-        $DB->delete_records('block_ajaxforms_entries', [
+        $DB->delete_records('block_revisionmanager_entries', [
             'userid' => $USER->id,
             'courseid' => $courseid,
             'pageurl' => $pageurl

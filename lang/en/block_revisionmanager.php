@@ -17,7 +17,7 @@
 /**
  * Plugin strings are defined here.
  *
- * @package     block_ajaxforms
+ * @package     block_revisionmanager
  * @category    string
  * @copyright   2025 Your Name <you@example.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -25,6 +25,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['pluginname'] = 'Ajax Form Blocks For Testing';
+$string['pluginname'] = 'Active Recalling Revision Manager';
 $string['navigationlabel'] = 'Revision Dashboard';
 $string['summary'] = 'Revision Summary Table';

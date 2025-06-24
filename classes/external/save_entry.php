@@ -1,5 +1,5 @@
 <?php
-namespace block_ajaxforms\external;
+namespace block_revisionmanager\external;
 
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/externallib.php');
@@ -37,7 +37,7 @@ class save_entry extends external_api {
 
         $timestamp = strtotime($nextreview);
 
-        $existing = $DB->get_record('block_ajaxforms_entries', ['userid' => $USER->id, 'pageurl' => $pageurl, 'courseid' => $courseid]);
+        $existing = $DB->get_record('block_revisionmanager_entries', ['userid' => $USER->id, 'pageurl' => $pageurl, 'courseid' => $courseid]);
 
         $record = new \stdClass();
         $record->userid = $USER->id;
@@ -49,9 +49,9 @@ class save_entry extends external_api {
 
         if ($existing) {
             $record->id = $existing->id;
-            $DB->update_record('block_ajaxforms_entries', $record);
+            $DB->update_record('block_revisionmanager_entries', $record);
         } else {
-            $DB->insert_record('block_ajaxforms_entries', $record);
+            $DB->insert_record('block_revisionmanager_entries', $record);
         }
 
         return ['status' => 'saved'];
