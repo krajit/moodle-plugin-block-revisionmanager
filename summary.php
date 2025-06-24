@@ -15,92 +15,80 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * All messages report
+ * Summary table page for AJAX Forms block.
  *
- * @package    block_ajaxforms
- * @copyright  2024 YOUR NAME <your@email.com>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   block_ajaxforms
+ * @copyright 2024 YOUR NAME
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require('../../config.php');
-global $OUTPUT, $DB;
 
-// Determine course context (if any).
+use block_ajaxforms\pageslist;
+
+global $DB, $PAGE, $OUTPUT, $USER;
+
+// Get course ID (optional) and retrieve course.
 $courseid = optional_param('courseid', 0, PARAM_INT);
-$course = null;
-$coursecontext = null;
-$inacourse = false;
+$course = $courseid ? $DB->get_record('course', ['id' => $courseid], '*', IGNORE_MISSING) : null;
 
-if ($courseid > 0 && ($course = $DB->get_record('course', ['id' => $courseid], '*', IGNORE_MISSING))) {
+// Determine context and layout.
+if ($course) {
     $coursecontext = context_course::instance($course->id);
     $PAGE->set_context($coursecontext);
+     $PAGE->set_course($course);
     $PAGE->set_pagelayout('incourse');
     $PAGE->set_heading(format_string($course->fullname, true, ['context' => $coursecontext]));
-    $inacourse = true;
+    navigation_node::override_active_url(new moodle_url('/course/view.php', ['id' => $course->id]));
 } else {
     $PAGE->set_context(context_system::instance());
     $PAGE->set_pagelayout('report');
-    $PAGE->set_heading(get_string('summary', 'block_ajaxforms'));
+//    $PAGE->set_heading(get_string('summary', 'block_ajaxforms'));
 }
 
+// Page URL and metadata.
 $PAGE->set_url(new moodle_url('/blocks/ajaxforms/summary.php', ['courseid' => $courseid]));
 $PAGE->set_title(get_string('pluginname', 'block_ajaxforms'));
 
-if ($inacourse) {
-    navigation_node::override_active_url(
-        new moodle_url('/course/view.php', ['id' => $course->id])
-    );
-}
-
 require_login();
-$filtercourseid = optional_param('courseid', 0, PARAM_INT);
-
-
 if (isguestuser()) {
     throw new moodle_exception('noguest');
 }
 
-// $homenode = $PAGE->navigation->add(
-//     get_string('pluginname', 'block_ajaxforms'),
-//     new moodle_url('/blocks/ajaxforms/summary.php')
-// );
-
-// $allmessagesnode = $homenode->add(
-//    get_string('summary', 'block_ajaxforms'),
-//    $url
-// );
-
-// $allmessagesnode->make_active();
-
+// Output starts.
 echo $OUTPUT->header();
+echo $OUTPUT->heading(get_string('summary', 'block_ajaxforms'));
 
-
-$userfields = \core_user\fields::for_name()->with_identity($context);
+// Get user fields for display.
+$userfields = \core_user\fields::for_name()->with_identity($PAGE->context);
 $userfieldssql = $userfields->get_sql('u');
 
-$table = new block_ajaxforms\pageslist($USER->id);
+// Build table object.
+$table = new pageslist($USER->id);
 
-// $table->set_sql("m.id, m.courseid, m.timemodified, m.userid, m.pageurl, m.nextreview {$userfieldssql->selects}",
-//     "{block_ajaxforms_entries} m LEFT JOIN {user} u ON u.id = m.userid" ,
-//     true);
+$userid = (int)$USER->id;
+$where = "m.userid = :userid";
+$params = ['userid' => $userid];
 
-$userid = (int) $USER->id;  // Always cast to int for safety
-$where = "m.userid = $userid";
-if ($filtercourseid > 0) {
-    $where .= " AND m.courseid = $filtercourseid";
+if ($course) {
+    $where .= " AND m.courseid = :courseid";
+    $params['courseid'] = $course->id;
 }
 
-$table->set_sql("m.id, m.courseid, m.timemodified, m.userid, m.pageurl, m.nextreview, m.pagetitle,
+// Define SQL and render table.
+$table->set_sql(
+    "m.id, m.courseid, m.timemodified, m.userid, m.pageurl, m.nextreview, m.pagetitle,
      c.shortname AS coursename {$userfieldssql->selects}",
     "{block_ajaxforms_entries} m
      LEFT JOIN {user} u ON u.id = m.userid
      LEFT JOIN {course} c ON c.id = m.courseid",
-     $where
-    );
+    $where,
+    $params
+);
 
 $table->sortable(true, 'nextreview', SORT_DESC);
-//$table->define_baseurl("$CFG->wwwroot/blocks/ajaxforms/summary.php");
-$table->define_baseurl(new moodle_url('/blocks/ajaxforms/summary.php', ['courseid' => $filtercourseid]));
+$table->define_baseurl($PAGE->url);
 $table->out(40, true);
 
+// Output footer.
 echo $OUTPUT->footer();
