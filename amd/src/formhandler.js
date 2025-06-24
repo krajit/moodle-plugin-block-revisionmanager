@@ -6,24 +6,34 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
                 const pageurl = window.location.pathname + window.location.search;
 
                 if (!date) {
-                    // Nothing to save
-                    return;
+                    // Call delete endpoint when date is cleared
+                    Ajax.call([{
+                        methodname: 'block_ajaxforms_delete_entry',
+                        args: {
+                            pageurl: pageurl,
+                            courseid: params.courseid
+                        },
+                        done: function(response) {
+                            console.log('Entry deleted:', response.status);
+                        },
+                        fail: Notification.exception
+                    }]);
+                } else {
+                    // Save date normally
+                    Ajax.call([{
+                        methodname: 'block_ajaxforms_save_entry',
+                        args: {
+                            nextreview: date,
+                            pageurl: pageurl,
+                            courseid: params.courseid,
+                            pagetitle: params.pagetitle
+                        },
+                        done: function(response) {
+                            console.log('Saved:', response.status);
+                        },
+                        fail: Notification.exception
+                    }]);
                 }
-
-                Ajax.call([{
-                    methodname: 'block_ajaxforms_save_entry',
-                    args: {
-                        nextreview: date,
-                        pageurl: pageurl,
-                        courseid: params.courseid,
-                        pagetitle: params.pagetitle,
-                    },
-                    done: function(response) {
-                        window.console.log('Saved:', response.status);
-                    },
-                    fail: Notification.exception
-                }]);
-                
             }
 
             function loadExistingData() {

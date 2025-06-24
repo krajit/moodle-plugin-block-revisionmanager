@@ -17,4 +17,12 @@ $functions = [
         'ajax' => true,
         'capabilities' => ''
     ],
+    'block_ajaxforms_delete_entry' => [
+    'classname'   => 'block_ajaxforms\external\delete_entry',
+    'methodname'  => 'delete_entry',
+    'description' => 'Deletes a review entry for the current user and page',
+    'type'        => 'write',
+    'ajax'        => true,
+    'capabilities' => ''
+],
 ];
