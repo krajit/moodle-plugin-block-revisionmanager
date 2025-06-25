@@ -1,46 +1,48 @@
 <div class="container">
 
-    <div class="container">
+    <!-- Learning Level Selector (Dropdown) -->
+    <div class="mb-4">
+        <label for="learninglevel" class="form-label">Learning Level</label>
+        <select id="learninglevel" class="form-select form-select-sm">
+            <option value="Not Started">Not Started</option>
+            <option value="Fresh">Fresh</option>
+            <option value="Learning">Learning</option>
+            <option value="Expert">Expert</option>
+            <option value="Done">Done</option>
+        </select>
+    </div>
 
-        <!-- Learning Level Selector (Dropdown) -->
-        <div class="mb-4">
-            <label for="learninglevel" class="form-label">Learning Level</label>
-            <select id="learninglevel" class="form-select form-select-sm">
-                <option value="Not Started">Not Started</option>
-                <option value="Fresh">Fresh</option>
-                <option value="Learning">Learning</option>
-                <option value="Expert">Expert</option>
-                <option value="Done">Done</option>
-            </select>
+    <!-- Compact Row with Revised, Target, and Progress -->
+    <div class="row align-items-end g-3 mb-3">
+        <div class="col-auto">
+            <label for="revisioncount" class="form-label mb-0">Revised</label>
+            <input type="number" class="form-control form-control-sm" id="revisioncount" min="0" value="0"
+                style="width: 80px;">
         </div>
 
-        <!-- Compact Row with Revised, Target, and Progress -->
-        <div class="row align-items-end g-3 mb-3">
-            <div class="col-auto">
-                <label for="revisioncount" class="form-label mb-0">Revised</label>
-                <input type="number" class="form-control form-control-sm" id="revisioncount" min="0" value="0"
-                    style="width: 80px;">
-            </div>
-
-            <div class="col-auto">
-                <label for="targetcount" class="form-label mb-0">Target</label>
-                <input type="number" class="form-control form-control-sm" id="targetcount" min="1" value="5"
-                    style="width: 80px;">
-            </div>
-
-            <div class="col">
-                <label class="form-label mb-0">Progress</label>
-                <div class="progress">
-                    <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuemin="0"
-                        aria-valuemax="100">0%</div>
-                </div>
-            </div>
+        <div class="col-auto">
+            <label for="targetcount" class="form-label mb-0">Target</label>
+            <input type="number" class="form-control form-control-sm" id="targetcount" min="1" value="5"
+                style="width: 80px;">
         </div>
 
-        <!-- Next Review Date -->
-        <div class="mb-3">
-            <label for="nextReview" class="form-label">Suggested Next Review Date</label>
-            <input type="date" class="form-control" id="nextReview">
+        <div class="col">
+            <label class="form-label mb-0">Progress</label>
+            <div class="progress">
+                <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuemin="0"
+                    aria-valuemax="100">0%</div>
+            </div>
         </div>
+    </div>
+
+    <!-- Next Review Date -->
+    <div class="mb-3">
+        <label for="nextReview" class="form-label">Suggested Next Review Date</label>
+        <input type="date" class="form-control" id="nextReview">
+    </div>
+
+    <!-- Next dashboard -->
+    <div class="mb-3">
+        <a href={{dashboardurl}}>Course Review Dashboard</a>
     </div>
 </div>

@@ -52,18 +52,19 @@ class block_revisionmanager extends block_base {
         $this->content = new stdClass();
         $this->content->items = [];
         $this->content->icons = [];
-        // $this->content->footer = '';
+        $this->content->footer = '';
 
          // Add a footer gear icon linking to course plugin page.
         $url = new moodle_url('/blocks/revisionmanager/summary.php', ['courseid' => $COURSE->id]);
 
-        $gearicon = $OUTPUT->pix_icon('i/settings', get_string('settings'));
-        $this->content->footer = html_writer::link($url, "Course Review Dashboard", []);
+        // $gearicon = $OUTPUT->pix_icon('i/settings', get_string('settings'));
+        // $this->content->footer = html_writer::link($url, "Course Review Dashboard", []);
 
         if (!empty($this->config->text)) {
             $this->content->text = $this->config->text;
         } else {
-            $text = $OUTPUT->render_from_template('block_revisionmanager/learningtracker',[]);
+            $text = $OUTPUT->render_from_template('block_revisionmanager/learningtracker',
+            ['dashboardurl'=>$url]);
             $this->content->text = $text;
         }
 
