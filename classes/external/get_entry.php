@@ -37,21 +37,30 @@ class get_entry extends external_api {
             return [
                 'nextreview' => '',
                 'status' => 'not found',
+                'learninglevel' => "Not Started", // TODO This should not be hardcoded
+                'revisioncount' => 0, // TODO This should not be hardcoded
+                'targetcount' => 10, // TODO This should not be hardcoded
             ];
         }
 
         return [
             'nextreview' => date('Y-m-d', $record->nextreview),
             'status' => 'found',
+            'learninglevel' => $record->learninglevel, 
+            'revisioncount' => $record->revisioncount,
+            'targetcount' => $record->targetcount,
         ];
-
 
     }
 
     public static function execute_returns() {
         return new external_single_structure([
             'status' => new external_value(PARAM_TEXT, 'Status'),
-            'nextreview' => new external_value(PARAM_TEXT, 'Next review date')
+            'nextreview' => new external_value(PARAM_TEXT, 'Next review date'),
+            'learninglevel' => new external_value(PARAM_TEXT, 'Learning Level'),
+            'revisioncount' => new external_value(PARAM_INT, 'Revision Count'),
+            'targetcount' => new external_value(PARAM_INT, 'Target Count'),
+
         ]);
     }
 }

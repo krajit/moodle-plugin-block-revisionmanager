@@ -17,11 +17,14 @@ class save_entry extends external_api {
             'pageurl' => new external_value(PARAM_RAW, 'Page URL'),
             'courseid' => new external_value(PARAM_INT, 'Course ID'),
             'pagetitle' => new external_value(PARAM_TEXT, 'Page Title'),
-
+            'learninglevel' => new external_value(PARAM_TEXT, 'Learning Level'),
+            'revisioncount' => new external_value(PARAM_INT, 'Revision Count'),
+            'targetcount' => new external_value(PARAM_INT, 'Target Count'),
         ]);
     }
 
-    public static function execute($nextreview, $pageurl,$courseid, $pagetitle) {
+    public static function execute($nextreview, $pageurl,$courseid, $pagetitle,
+                                    $learninglevel, $revisioncount,$targetcount) {
         error_log("DEBUG: save_entry called with $nextreview, $pageurl");
 
         global $USER, $DB;
@@ -32,7 +35,10 @@ class save_entry extends external_api {
             'nextreview' => $nextreview,
             'pageurl' => $pageurl,
             'courseid' => $courseid,
-            'pagetitle' => $pagetitle
+            'pagetitle' => $pagetitle,
+            'learninglevel' => $learninglevel, 
+            'revisioncount' => $revisioncount,
+            'targetcount' => $targetcount,
         ]);
 
         $timestamp = strtotime($nextreview);
@@ -46,6 +52,9 @@ class save_entry extends external_api {
         $record->pageurl = $pageurl;
         $record->timemodified = time();
         $record->pagetitle = $pagetitle;
+        $record->learninglevel = $learninglevel;
+        $record->revisioncount = $revisioncount;
+        $record->targetcount = $targetcount;
 
         if ($existing) {
             $record->id = $existing->id;

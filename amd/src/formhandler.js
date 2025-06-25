@@ -3,21 +3,25 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
         init: function(params) {
             function saveData() {
                 const date = $('#nextReview').val();
+                const learninglevel = $('#learninglevel').val();
+                const revisioncount = $('#revisioncount').val();
+                const targetcount = $('#targetcount').val();
                 const pageurl = window.location.pathname + window.location.search;
 
                 if (!date) {
                     // Call delete endpoint when date is cleared
-                    Ajax.call([{
-                        methodname: 'block_revisionmanager_delete_entry',
-                        args: {
-                            pageurl: pageurl,
-                            courseid: params.courseid
-                        },
-                        done: function(response) {
-                            console.log('Entry deleted:', response.status);
-                        },
-                        fail: Notification.exception
-                    }]);
+                    window.console.log("date cleared. TODO: Update when to delete page row from the table");
+                    // Ajax.call([{
+                    //     methodname: 'block_revisionmanager_delete_entry',
+                    //     args: {
+                    //         pageurl: pageurl,
+                    //         courseid: params.courseid
+                    //     },
+                    //     done: function(response) {
+                    //         console.log('Entry deleted:', response.status);
+                    //     },
+                    //     fail: Notification.exception
+                    // }]);
                 } else {
                     // Save date normally
                     Ajax.call([{
@@ -26,7 +30,10 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
                             nextreview: date,
                             pageurl: pageurl,
                             courseid: params.courseid,
-                            pagetitle: params.pagetitle
+                            pagetitle: params.pagetitle,
+                            learninglevel: learninglevel,
+                            revisioncount: revisioncount,
+                            targetcount: targetcount,
                         },
                         done: function(response) {
                             console.log('Saved:', response.status);
@@ -49,6 +56,16 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
                         if (data.nextreview) {
                             $('#nextReview').val(data.nextreview);
                         }
+                        if (data.learninglevel) {
+                            $('#learninglevel').val(data.learninglevel);
+                        }
+                        if (data.revisioncount) {
+                            $('#revisioncount').val(data.revisioncount);
+                        }
+                        if (data.targetcount) {
+                            $('#targetcount').val(data.targetcount);
+                        }
+
                     },
                     fail: Notification.exception
                 }]);
@@ -56,6 +73,9 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
 
             // Attach listeners for autosave
             $('#nextReview').on('input change', saveData);
+            $('#learninglevel').on('input change', saveData);
+            $('#revisioncount').on('input change', saveData);
+            $('#targetcount').on('input change', saveData);
             loadExistingData();
         }
     };
