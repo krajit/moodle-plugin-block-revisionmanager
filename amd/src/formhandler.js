@@ -34,32 +34,33 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
             }
 
             function saveData() {
-                const date = $('#nextReview').val();
+                var date = $('#nextReview').val();
                 const learninglevel = $('#learninglevel').val();
                 const revisioncount = $('#revisioncount').val();
                 const targetcount = $('#targetcount').val();
                 const pageurl = window.location.pathname + window.location.search;
 
                 if (!date) {
-                    window.console.log("date cleared. TODO: Update when to delete page row from the table");
-                } else {
-                    Ajax.call([{
-                        methodname: 'block_revisionmanager_save_entry',
-                        args: {
-                            nextreview: date,
-                            pageurl: pageurl,
-                            courseid: params.courseid,
-                            pagetitle: params.pagetitle,
-                            learninglevel: learninglevel,
-                            revisioncount: revisioncount,
-                            targetcount: targetcount,
-                        },
-                        done: function(response) {
-                            console.log('Saved:', response.status);
-                        },
-                        fail: Notification.exception
-                    }]);
+                    date = '';
+                    //window.console.log("date cleared. TODO: Update when to delete page row from the table");
                 }
+                Ajax.call([{
+                    methodname: 'block_revisionmanager_save_entry',
+                    args: {
+                        nextreview: date,
+                        pageurl: pageurl,
+                        courseid: params.courseid,
+                        pagetitle: params.pagetitle,
+                        learninglevel: learninglevel,
+                        revisioncount: revisioncount,
+                        targetcount: targetcount,
+                    },
+                    done: function(response) {
+                        console.log('Saved:', response.status);
+                    },
+                    fail: Notification.exception
+                }]);
+                
             }
 
             function loadExistingData() {
