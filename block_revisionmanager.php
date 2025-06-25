@@ -40,6 +40,12 @@ class block_revisionmanager extends block_base {
     public function get_content() {
         global $OUTPUT, $PAGE, $COURSE;
 
+        // Block only visible on mod_lesson view.php pages.
+        // TODO: Extend this block to be visible on other activity pages
+        if ($PAGE->cm->modname !== 'page') {
+            return null;
+        }
+
         if ($this->content !== null) {
             return $this->content;
         }
