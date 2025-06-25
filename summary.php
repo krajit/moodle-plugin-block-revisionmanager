@@ -78,6 +78,7 @@ if ($course) {
 // Define SQL and render table.
 $table->set_sql(
     "m.id, m.courseid, m.timemodified, m.userid, m.pageurl, m.nextreview, m.pagetitle,
+    m.learninglevel, m.revisioncount, m.targetcount,
      c.shortname AS coursename {$userfieldssql->selects}",
     "{block_revisionmanager_entries} m
      LEFT JOIN {user} u ON u.id = m.userid

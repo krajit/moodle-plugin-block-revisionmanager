@@ -36,14 +36,14 @@ class pageslist extends \table_sql {
     public function __construct($uniqueid) {
         parent::__construct($uniqueid);
         // Define the list of columns to show.
-        $columns = ['courseid', 'pageurl','nextreview'];
+        $columns = ['courseid', 'pageurl','nextreview',	
+                    'learninglevel', 'revisioncount', 'targetcount'];
         $this->define_columns($columns);
 
         // Define the titles of columns to show in header.
         $headers = [
-            get_string('course'),
-            'Page URL',
-            'Next Review',
+            get_string('course'), 'Page URL', 'Next Review',
+            'Learning Level', 'Revision Count', 'Target Count'
         ];
         $this->define_headers($headers);
     }
