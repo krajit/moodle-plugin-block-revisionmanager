@@ -42,7 +42,8 @@ class block_revisionmanager extends block_base {
 
         // Block only visible on mod_lesson view.php pages.
         // TODO: Extend this block to be visible on other activity pages
-        if ($PAGE->cm->modname !== 'page') {
+        echo $PAGE->cm->modname;
+        if (($PAGE->cm->modname !== 'page') && ($PAGE->cm->modname !== 'book')) {
             return null;
         }
 
