@@ -26,6 +26,6 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'block_revisionmanager';
 $plugin->release = '0.1.0';
-$plugin->version = 2025062110;
+$plugin->version = 2025062111;
 $plugin->requires = 2022112800;
 $plugin->maturity = MATURITY_ALPHA;

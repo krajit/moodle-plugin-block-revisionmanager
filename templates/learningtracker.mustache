@@ -43,45 +43,4 @@
             <input type="date" class="form-control" id="nextReview">
         </div>
     </div>
-
-    <script>
-        // Learning level color mapping
-        const levelSelect = document.getElementById('learninglevel');
-        const levelColors = {
-            "Not Started": "#f8d7da", // light red
-            "Fresh": "#fce5cd",       // light orange
-            "Learning": "#fff3cd",    // light yellow
-            "Expert": "#d1ecf1",      // light blue
-            "Done": "#d4edda"         // light green
-        };
-
-        function updateLevelColor() {
-            const selectedLevel = levelSelect.value;
-            levelSelect.style.backgroundColor = levelColors[selectedLevel] || "white";
-        }
-
-        levelSelect.addEventListener('change', updateLevelColor);
-
-        // Progress Bar logic
-        const revisionInput = document.getElementById('revisioncount');
-        const targetInput = document.getElementById('targetcount');
-        const progressBar = document.getElementById('progressBar');
-
-        function updateProgressBar() {
-            const revisioncount = parseInt(revisionInput.value) || 0;
-            const targetcount = parseInt(targetInput.value) || 1;
-            const percent = Math.min(100, Math.round((revisioncount / targetcount) * 100));
-            progressBar.style.width = percent + '%';
-            progressBar.textContent = percent + '%';
-        }
-
-        revisionInput.addEventListener('input', updateProgressBar);
-        targetInput.addEventListener('input', updateProgressBar);
-
-        window.addEventListener('DOMContentLoaded', () => {
-            updateProgressBar();
-            updateLevelColor();
-        });
-    </script>
-
 </div>
