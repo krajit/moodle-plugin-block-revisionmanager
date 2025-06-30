@@ -18,11 +18,19 @@ $functions = [
         'capabilities' => ''
     ],
     'block_revisionmanager_delete_entry' => [
-    'classname'   => 'block_revisionmanager\external\delete_entry',
-    'methodname'  => 'delete_entry',
-    'description' => 'Deletes a review entry for the current user and page',
-    'type'        => 'write',
-    'ajax'        => true,
-    'capabilities' => ''
-],
+        'classname'   => 'block_revisionmanager\external\delete_entry',
+        'methodname'  => 'delete_entry',
+        'description' => 'Deletes a review entry for the current user and page',
+        'type'        => 'write',
+        'ajax'        => true,
+        'capabilities' => ''
+    ],
+    'block_revisionmanager_get_read_urls' => [
+        'classname'   => 'block_revisionmanager\external\get_read_urls',
+        'methodname'  => 'execute',
+        'description' => 'Returns read URLs for a user in a course',
+        'type'        => 'read',
+        'ajax'        => true,
+        'capabilities' => ''
+    ]
 ];

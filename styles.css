@@ -1,0 +1,4 @@
+.book_toc a.read-chapter {
+    color: green !important;
+    font-weight: bold;
+}
