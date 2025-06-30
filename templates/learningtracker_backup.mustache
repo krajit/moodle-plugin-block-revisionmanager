@@ -1,56 +1,48 @@
 <div class="container">
-    <!-- <h4 class="mb-3">Learning Tracker</h4> -->
 
-    <!-- Learning Level -->
-    <div class="mb-3">
-        <label class="form-label d-block">Learning Level</label>
-        <div class="btn-group btn-toggle-group" role="group">
-            <input type="radio" class="btn-check" name="revisionmanager" id="fresh" autocomplete="off">
-            <label class="btn btn-outline-secondary btn-fresh" for="fresh" data-value="Fresh">Fresh</label>
-
-            <input type="radio" class="btn-check" name="revisionmanager" id="learning" autocomplete="off">
-            <label class="btn btn-outline-secondary btn-learning" for="learning" data-value="Learning">Learning</label>
-
-            <input type="radio" class="btn-check" name="revisionmanager" id="learned" autocomplete="off">
-            <label class="btn btn-outline-secondary btn-learned" for="learned" data-value="Learned">Learned</label>
-        </div>
+    <!-- Learning Level Selector (Dropdown) -->
+    <div class="mb-4">
+        <label for="learninglevel" class="form-label">Learning Level</label>
+        <select id="learninglevel" class="form-select form-select-sm">
+            <option value="Not Started">Not Started</option>
+            <option value="Fresh">Fresh</option>
+            <option value="Learning">Learning</option>
+            <option value="Expert">Expert</option>
+            <option value="Done">Done</option>
+        </select>
     </div>
 
-        <!-- Revision Count -->
-    <div class="mb-3">
-        <label for="revisioncount" class="form-label">Number of Times Revised</label>
-        <input type="number" class="form-control" id="revisioncount" min="0" value="{{revisioncount}}">
+    <!-- Compact Row with Revised, Target, and Progress -->
+    <div class="row align-items-end g-3 mb-3">
+        <div class="col-auto">
+            <label for="revisioncount" class="form-label mb-0">Revised</label>
+            <input type="number" class="form-control form-control-sm" id="revisioncount" min="0" value="0"
+                style="width: 80px;">
+        </div>
+
+        <div class="col-auto">
+            <label for="targetcount" class="form-label mb-0">Target</label>
+            <input type="number" class="form-control form-control-sm" id="targetcount" min="1" value="5"
+                style="width: 80px;">
+        </div>
+
+        <div class="col">
+            <label class="form-label mb-0">Progress</label>
+            <div class="progress">
+                <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuemin="0"
+                    aria-valuemax="100">0%</div>
+            </div>
+        </div>
     </div>
 
     <!-- Next Review Date -->
     <div class="mb-3">
         <label for="nextReview" class="form-label">Suggested Next Review Date</label>
-        <input type="date" class="form-control" id="nextReview" value="{{nextreview}}">
+        <input type="date" class="form-control" id="nextReview">
+    </div>
+
+    <!-- Next dashboard -->
+    <div class="mb-3">
+        <a href={{dashboardurl}}>Course Review Dashboard</a>
     </div>
 </div>
-
-
-
-
-<style>
-    .btn-toggle-group .btn {
-        background-color: #e0e0e0;
-        color: #000;
-        border-color: #ccc;
-    }
-
-    .btn-check:checked + .btn-fresh {
-        background-color: #dc3545;
-        color: #fff;
-    }
-
-    .btn-check:checked + .btn-learning {
-        background-color: #ffc107;
-        color: #000;
-    }
-
-    .btn-check:checked + .btn-learned {
-        background-color: #28a745;
-        color: #fff;
-    }
-</style>

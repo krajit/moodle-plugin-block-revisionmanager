@@ -92,6 +92,8 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
                 }]);
             }
 
+            
+
             // Attach listeners for autosave
             $('#nextReview').on('input change', saveData);
             $('#learninglevel').on('input change', function() {
@@ -111,6 +113,83 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
             updateLevelColor();
             updateProgressBar();
             loadExistingData();
+        
+            // Add after loadExistingData()
+
+            function setupRatingPopup() {
+                const container = document.getElementById('rating-container');
+                const popup = document.getElementById('rating-popup');
+                const dateInput = document.getElementById('rating-date');
+                const valueInput = document.getElementById('rating-value');
+                const saveBtn = document.getElementById('rating-save');
+
+                let currentButton = null;
+
+                container.querySelectorAll('.rating-btn').forEach(button => {
+                    button.addEventListener('click', function(e) {
+                        currentButton = this;
+
+                        // Fill form with current values
+                        valueInput.value = this.dataset.rating;
+                        dateInput.value = this.dataset.date || new Date().toISOString().split('T')[0];
+
+                        // Position popup below button
+                        const rect = this.getBoundingClientRect();
+                        const containerRect = container.getBoundingClientRect();
+
+                        popup.style.position = 'absolute';
+                        popup.style.left = `${rect.left - containerRect.left}px`;
+                        popup.style.top = `${rect.top - containerRect.top + 45}px`;
+                        popup.style.display = 'block';
+                    });
+                });
+
+                // Save logic
+                saveBtn.addEventListener('click', function() {
+                    if (currentButton) {
+                        const newRating = valueInput.value;
+                        const newDate = dateInput.value;
+
+                        currentButton.textContent = newRating;
+                        currentButton.dataset.rating = newRating;
+                        currentButton.dataset.date = newDate;
+
+                        popup.style.display = 'none';
+
+                                                    // Remove old color classes
+                            currentButton.classList.remove('bg-danger', 'bg-warning', 'bg-success', 'bg-orange', 'bg-lightgreen');
+
+                            // Add based on rating
+                            let rating = parseInt(newRating);
+                            if (rating === 1) {
+                                currentButton.classList.add('bg-danger', 'text-white');
+                            } else if (rating === 2) {
+                                currentButton.classList.add('bg-orange', 'text-white');
+                            } else if (rating === 3) {
+                                currentButton.classList.add('bg-warning', 'text-dark');
+                            } else if (rating === 4) {
+                                currentButton.classList.add('bg-lightgreen', 'text-white');
+                            } else if (rating === 5) {
+                                currentButton.classList.add('bg-success', 'text-white');
+                            }
+
+                        // TODO: Add save to DB if needed
+                        console.log(`Saved: ${newRating} on ${newDate}`);
+                    }
+                });
+
+                // Hide if clicked outside
+                document.addEventListener('click', function(e) {
+                    if (!popup.contains(e.target) && !e.target.classList.contains('rating-btn')) {
+                        popup.style.display = 'none';
+                    }
+                });
+            }
+
+            // Then call setupRatingPopup() at the end of init()
+            setupRatingPopup();
+
+        
         }
     };
 });

@@ -2,3 +2,30 @@
     color: green !important;
     font-weight: bold;
 }
+
+
+.rating-btn {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  font-size: 14px;
+  line-height: 40px;
+  text-align: center;
+}
+
+.popup-form {
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  padding: 10px;
+  z-index: 999;
+}
+
+.bg-orange {
+  background-color: #fd7e14 !important; /* Bootstrap orange */
+}
+
+.bg-lightgreen {
+  background-color: #90ee90 !important; /* Light green */
+}

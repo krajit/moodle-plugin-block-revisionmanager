@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Popup Form on Rating Button</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .rating-button {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      font-size: 16px;
+      text-align: center;
+      line-height: 40px;
+    }
+
+    .popup-form {
+      position: absolute;
+      background: white;
+      border: 1px solid #ccc;
+      padding: 8px;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      display: none;
+      z-index: 1000;
+      width: 180px;
+    }
+
+    .popup-form input {
+      width: 100%;
+      margin-bottom: 6px;
+    }
+
+    .container-relative {
+      position: relative;
+    }
+  </style>
+</head>
+<body class="p-4">
+
+<h5>Revision Manager</h5>
+
+<div class="d-flex flex-wrap gap-2 container-relative" id="ratingContainer">
+  <!-- Buttons inserted here -->
+</div>
+
+<!-- Popup Form -->
+<div class="popup-form" id="popupForm">
+  <label class="form-label mb-1">Date:</label>
+  <input type="date" class="form-control" id="dateInput">
+  <label class="form-label mb-1">Rating:</label>
+  <input type="number" class="form-control" id="ratingInput" min="0" max="5">
+  <button class="btn btn-sm btn-primary w-100 mt-2" id="saveBtn">Save</button>
+</div>
+
+<script>
+  const ratingContainer = document.getElementById('ratingContainer');
+  const popupForm = document.getElementById('popupForm');
+  const dateInput = document.getElementById('dateInput');
+  const ratingInput = document.getElementById('ratingInput');
+  const saveBtn = document.getElementById('saveBtn');
+
+  // Dummy buttons
+  const ratings = [5, 5, 5, 5, 5, 5, 5, 5];
+  ratings.forEach((rating, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'btn btn-success rounded-circle btn-xs rating-button';
+    btn.textContent = rating;
+    btn.dataset.index = i;
+    btn.addEventListener('click', (e) => showPopupForm(e.target));
+    ratingContainer.appendChild(btn);
+  });
+
+  let currentButton = null;
+
+  function showPopupForm(button) {
+    const rect = button.getBoundingClientRect();
+    const containerRect = ratingContainer.getBoundingClientRect();
+
+    popupForm.style.left = `${rect.left - containerRect.left}px`;
+    popupForm.style.top = `${rect.top - containerRect.top + 45}px`;
+    popupForm.style.display = 'block';
+
+    currentButton = button;
+    ratingInput.value = button.textContent;
+    dateInput.valueAsDate = new Date(); // Set to today by default
+  }
+
+  // Save action
+  saveBtn.addEventListener('click', () => {
+    currentButton.textContent = ratingInput.value;
+    popupForm.style.display = 'none';
+    console.log(`Saved rating ${ratingInput.value} for date ${dateInput.value}`);
+  });
+
+  // Hide popup if clicked outside
+  document.addEventListener('click', (e) => {
+    if (!popupForm.contains(e.target) && !e.target.classList.contains('rating-button')) {
+      popupForm.style.display = 'none';
+    }
+  });
+</script>
+
+</body>
+</html>

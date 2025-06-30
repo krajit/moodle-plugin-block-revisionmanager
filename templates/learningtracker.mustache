@@ -1,5 +1,35 @@
 <div class="container">
 
+    <!-- Revision History -->
+    <div class="mb-4">
+        <label class="form-label">Revision History</label>
+        <div id="rating-container" class="d-flex flex-wrap gap-2 position-relative">
+            {{#ratings}}
+            <button type="button" class="btn btn-success rounded-circle btn-xs rating-btn" data-rating="{{rating}}"
+                data-date="{{date}}">
+                {{rating}}
+            </button>
+            {{/ratings}}
+            <button type="button" class="btn btn-success rounded-circle btn-xs rating-btn" data-rating="5"
+                data-date="2025-06-25">5</button>
+            <button type="button" class="btn btn-success rounded-circle btn-xs rating-btn" data-rating="4"
+                data-date="2025-06-24">4</button>
+            <button type="button" class="btn btn-success rounded-circle btn-xs rating-btn" data-rating="3"
+                data-date="2025-06-23">3</button>
+
+            <!-- Popup form will be injected here -->
+            <div id="rating-popup" class="popup-form" style="display: none;">
+                <label class="form-label mb-1">Date</label>
+                <input type="date" class="form-control form-control-sm mb-2" id="rating-date">
+
+                <label class="form-label mb-1">Rating</label>
+                <input type="number" min="0" max="5" class="form-control form-control-sm mb-2" id="rating-value">
+
+                <button class="btn btn-sm btn-primary w-100" id="rating-save">Save</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Learning Level Selector (Dropdown) -->
     <div class="mb-4">
         <label for="learninglevel" class="form-label">Learning Level</label>
