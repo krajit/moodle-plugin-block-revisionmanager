@@ -23,11 +23,12 @@ class save_rating extends external_api {
             'nextreview' => new external_value(PARAM_TEXT, 'Next review date (Y-m-d)'),
             'pagetitle' => new external_value(PARAM_TEXT, 'Page Title'),
             'chapterid' => new external_value(PARAM_INT, 'Chapter Id'),
+            'ratingkey' => new external_value(PARAM_INT, 'Existing rating id to update (optional)', VALUE_DEFAULT, 0)
         ]);
     }
 
     public static function save_rating($courseid, $pageid, $ratingvalue, $ratingdate,
-                $pageurl, $nextreview, $pagetitle, $chapterid) {
+        $pageurl, $nextreview, $pagetitle, $chapterid, $ratingkey = 0) {
         global $DB, $USER;
 
         $record = new \stdClass();
@@ -42,15 +43,20 @@ class save_rating extends external_api {
         $record->pagetitle = $pagetitle;
         $record->chapterid = $chapterid;
 
+        if ($ratingkey > 0 && $DB->record_exists('block_revisionmanager_ratings', ['id' => $ratingkey, 'userid' => $USER->id])) {
+            $record->id = $ratingkey;
+            $DB->update_record('block_revisionmanager_ratings', $record);
+        } else {
+            $ratingkey = $DB->insert_record('block_revisionmanager_ratings', $record);
+        }
 
-        $DB->insert_record('block_revisionmanager_ratings', $record);
-
-        return ['status' => 'success'];
+        return ['status' => 'success', 'ratingkey' => $ratingkey];
     }
 
     public static function save_rating_returns() {
         return new external_single_structure([
             'status' => new external_value(PARAM_TEXT),
+            'ratingkey' => new external_value(PARAM_INT, 'The id of the saved record')
         ]);
     }
 
@@ -75,6 +81,7 @@ class save_rating extends external_api {
         $result = [];
         foreach ($records as $r) {
             $result[] = [
+                'ratingkey' => $r->id,
                 'ratingdate' => $r->ratingdate,
                 'ratingvalue' => $r->ratingvalue
             ];
@@ -86,6 +93,7 @@ class save_rating extends external_api {
     public static function get_ratings_returns() {
         return new external_multiple_structure(
             new external_single_structure([
+                'ratingkey' => new external_value(PARAM_INT, 'Primary key of rating'),
                 'ratingdate' => new external_value(PARAM_INT),
                 'ratingvalue' => new external_value(PARAM_INT),
             ])
