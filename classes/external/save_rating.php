@@ -19,10 +19,15 @@ class save_rating extends external_api {
             'pageid' => new external_value(PARAM_INT),
             'ratingvalue' => new external_value(PARAM_INT),
             'ratingdate' => new external_value(PARAM_INT),
+            'pageurl' => new external_value(PARAM_RAW, 'Page URL'),
+            'nextreview' => new external_value(PARAM_TEXT, 'Next review date (Y-m-d)'),
+            'pagetitle' => new external_value(PARAM_TEXT, 'Page Title'),
+            'chapterid' => new external_value(PARAM_INT, 'Chapter Id'),
         ]);
     }
 
-    public static function save_rating($courseid, $pageid, $ratingvalue, $ratingdate) {
+    public static function save_rating($courseid, $pageid, $ratingvalue, $ratingdate,
+                $pageurl, $nextreview, $pagetitle, $chapterid) {
         global $DB, $USER;
 
         $record = new \stdClass();
@@ -32,6 +37,11 @@ class save_rating extends external_api {
         $record->ratingvalue = $ratingvalue;
         $record->ratingdate = $ratingdate;
         $record->timemodified = time();
+        $record->pageurl = $pageurl;
+        $record->nextreview = $nextreview;
+        $record->pagetitle = $pagetitle;
+        $record->chapterid = $chapterid;
+
 
         $DB->insert_record('block_revisionmanager_ratings', $record);
 
@@ -48,16 +58,18 @@ class save_rating extends external_api {
         return new external_function_parameters([
             'courseid' => new external_value(PARAM_INT),
             'pageid' => new external_value(PARAM_INT),
+            'chapterid' => new external_value(PARAM_INT),
         ]);
     }
 
-    public static function get_ratings($courseid, $pageid) {
+    public static function get_ratings($courseid, $pageid, $chapterid) {
         global $DB, $USER;
 
         $records = $DB->get_records('block_revisionmanager_ratings', [
             'userid' => $USER->id,
             'courseid' => $courseid,
-            'pageid' => $pageid
+            'pageid' => $pageid,
+            'chapterid' => $chapterid,
         ], 'ratingdate ASC');
 
         $result = [];

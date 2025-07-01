@@ -77,11 +77,16 @@ class block_revisionmanager extends block_base {
             'courseid' => $COURSE->id,
             'pagetitle' => $PAGE->title,
             'pageid' => $PAGE->cm->id,
+            'chapterid' => null
         ];
+        if (optional_param('chapterid', 0, PARAM_INT)) {
+            $params['chapterid'] = optional_param('chapterid', 0, PARAM_INT);
+        }
+
         $PAGE->requires->js_call_amd('block_revisionmanager/databasecommunicator', 'init', [$params]);
         
         $PAGE->requires->css('/blocks/revisionmanager/styles.css');
-        $PAGE->requires->js_call_amd('block_revisionmanager/boooktocmarker', 'init', [['courseid' => $COURSE->id]]);
+//        $PAGE->requires->js_call_amd('block_revisionmanager/boooktocmarker', 'init', [['courseid' => $COURSE->id]]);
         
         return $this->content;
     }

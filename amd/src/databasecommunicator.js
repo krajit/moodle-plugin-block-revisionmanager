@@ -9,6 +9,7 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
             const dateInput = document.getElementById('rating-date');
             const valueInput = document.getElementById('rating-value');
             const saveBtn = document.getElementById('rating-save');
+            //const chapterid = params.chapterid || null;
 
             // === Show popup when clicking plus button ===
             plusBtn?.addEventListener('click', (e) => {
@@ -26,6 +27,8 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
             saveBtn?.addEventListener('click', () => {
                 const rating = parseInt(valueInput.value);
                 const date = dateInput.value;
+                var nextreview = $('#nextReview').val();
+                const pageurl = window.location.pathname + window.location.search;
 
                 if (isNaN(rating) || rating < 0 || rating > 5) {
                     alert("Please enter a rating between 0 and 5");
@@ -40,7 +43,11 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
                         courseid: params.courseid,
                         pageid: params.pageid,
                         ratingvalue: rating,
-                        ratingdate: timestamp
+                        ratingdate: timestamp,
+                        pageurl: pageurl,
+                        nextreview: nextreview,
+                        pagetitle: params.pagetitle,
+                        chapterid: params.chapterid
                     },
                     done: function() {
                         const div = document.createElement('div');
@@ -67,7 +74,8 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
                 methodname: 'block_revisionmanager_get_ratings',
                 args: {
                     courseid: params.courseid,
-                    pageid: params.pageid
+                    pageid: params.pageid,
+                    chapterid: params.chapterid
                 },
                 done: function(ratings) {
                     ratings.forEach(r => {
