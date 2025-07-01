@@ -42,8 +42,8 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
 
                 if (!date) {
                     date = '';
-                    //window.console.log("date cleared. TODO: Update when to delete page row from the table");
                 }
+
                 Ajax.call([{
                     methodname: 'block_revisionmanager_save_entry',
                     args: {
@@ -60,7 +60,6 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
                     },
                     fail: Notification.exception
                 }]);
-                
             }
 
             function loadExistingData() {
@@ -68,7 +67,7 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
 
                 Ajax.call([{
                     methodname: 'block_revisionmanager_get_entry',
-                    args: { 
+                    args: {
                         pageurl: pageurl,
                         courseid: params.courseid
                     },
@@ -87,12 +86,62 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
                             $('#targetcount').val(data.targetcount);
                         }
                         updateProgressBar();
+
+                        // TODO: If you return a list of past ratings, render them here
+                        // Example: data.ratings = [{date: '2025-06-30', value: 4}, ...]
+                        // populateRatingGrid(data.ratings);
                     },
                     fail: Notification.exception
                 }]);
             }
 
-            // Attach listeners for autosave
+            // === RATING SQUARE UI ===
+            const grid = document.getElementById('rating-grid');
+            const plusBtn = document.getElementById('plusBtn');
+            const popup = document.getElementById('rating-popup');
+            const dateInput = document.getElementById('rating-date');
+            const valueInput = document.getElementById('rating-value');
+            const saveBtn = document.getElementById('rating-save');
+
+            plusBtn?.addEventListener('click', (e) => {
+                const rect = plusBtn.getBoundingClientRect();
+                const containerRect = grid.getBoundingClientRect();
+                popup.style.position = 'absolute';
+                popup.style.left = `${rect.left - containerRect.left + grid.scrollLeft}px`;
+                popup.style.top = `${rect.top - containerRect.top + 45}px`;
+                popup.style.display = 'block';
+                dateInput.valueAsDate = new Date();
+                valueInput.value = '';
+            });
+
+            saveBtn?.addEventListener('click', () => {
+                const rating = parseInt(valueInput.value);
+                const date = dateInput.value;
+
+                if (isNaN(rating) || rating < 0 || rating > 5) {
+                    alert("Please enter a rating between 0 and 5");
+                    return;
+                }
+
+                const div = document.createElement('div');
+                div.className = `rating-square bg-rating-${rating}`;
+                div.textContent = rating;
+                div.title = `Date: ${date}`;
+
+                grid.insertBefore(div, plusBtn);
+                popup.style.display = 'none';
+
+                // TODO: Save rating to server
+                console.log("Saved rating:", rating, "on", date);
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!popup.contains(e.target) && e.target !== plusBtn) {
+                    popup.style.display = 'none';
+                }
+            });
+
+            // === INIT ===
             $('#nextReview').on('input change', saveData);
             $('#learninglevel').on('input change', function() {
                 updateLevelColor();
@@ -107,7 +156,6 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
                 saveData();
             });
 
-            // Initial setup
             updateLevelColor();
             updateProgressBar();
             loadExistingData();

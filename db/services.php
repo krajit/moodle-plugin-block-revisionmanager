@@ -1,29 +1,19 @@
 <?php
 
 $functions = [
-    'block_revisionmanager_save_entry' => [
-        'classname' => 'block_revisionmanager\external\save_entry',
-        'methodname' => 'execute',
-        'description' => 'Saves revisionmanager form data',
+    'block_revisionmanager_save_rating' => [
+        'classname' => 'block_revisionmanager\external\save_rating',
+        'methodname' => 'save_rating',
+        'description' => 'Save rating for a page',
         'type' => 'write',
         'ajax' => true,
-        'loginrequired' => true,
     ],
-    'block_revisionmanager_get_entry' => [
-        'classname' => 'block_revisionmanager\external\get_entry',
-        'methodname' => 'execute',
-        'description' => 'Get existing revisionmanager data for a page',
+    'block_revisionmanager_get_ratings' => [
+        'classname' => 'block_revisionmanager\external\save_rating',
+        'methodname' => 'get_ratings',
+        'description' => 'Get all ratings for a page',
         'type' => 'read',
         'ajax' => true,
-        'capabilities' => ''
-    ],
-    'block_revisionmanager_delete_entry' => [
-        'classname'   => 'block_revisionmanager\external\delete_entry',
-        'methodname'  => 'delete_entry',
-        'description' => 'Deletes a review entry for the current user and page',
-        'type'        => 'write',
-        'ajax'        => true,
-        'capabilities' => ''
     ],
     'block_revisionmanager_get_read_urls' => [
         'classname'   => 'block_revisionmanager\external\get_read_urls',

@@ -42,7 +42,6 @@ class block_revisionmanager extends block_base {
 
         // Block only visible on mod_lesson view.php pages.
         // TODO: Extend this block to be visible on other activity pages
-        echo $PAGE->cm->modname;
         if (($PAGE->cm->modname !== 'page') && ($PAGE->cm->modname !== 'book')) {
             return null;
         }
@@ -70,16 +69,16 @@ class block_revisionmanager extends block_base {
         if (!empty($this->config->text)) {
             $this->content->text = $this->config->text;
         } else {
-            $text = $OUTPUT->render_from_template('block_revisionmanager/learningtracker',
-            ['dashboardurl'=>$url]);
+            $text = $OUTPUT->render_from_template('block_revisionmanager/learningtracker',[]);
             $this->content->text = $text;
         }
 
         $params = [
             'courseid' => $COURSE->id,
-            'pagetitle' => $PAGE->title
+            'pagetitle' => $PAGE->title,
+            'pageid' => $PAGE->cm->id,
         ];
-        $PAGE->requires->js_call_amd('block_revisionmanager/formhandler', 'init', [$params]);
+        $PAGE->requires->js_call_amd('block_revisionmanager/databasecommunicator', 'init', [$params]);
         
         $PAGE->requires->css('/blocks/revisionmanager/styles.css');
         $PAGE->requires->js_call_amd('block_revisionmanager/boooktocmarker', 'init', [['courseid' => $COURSE->id]]);
