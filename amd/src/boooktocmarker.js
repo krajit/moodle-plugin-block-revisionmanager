@@ -27,7 +27,7 @@ define(['jquery', 'core/ajax'], function($, Ajax) {
                             return `<span class="bg-rating-${clampedRating}">${clampedRating}</span>`;
                         }).join('');
 
-                        $(this).append(ratingHtml+' ');
+                        $(this).prepend(ratingHtml+' ');
                     }
                 });
             },
