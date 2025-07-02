@@ -25,7 +25,7 @@ class get_read_urls extends external_api {
 
         self::validate_parameters(self::execute_parameters(), ['courseid' => $courseid]);
 
-        $records = $DB->get_records('block_revisionmanager_entries', [
+        $records = $DB->get_records('block_revisionmanager_ratings', [
             'userid' => $USER->id,
             'courseid' => $courseid
         ]);

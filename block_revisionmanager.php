@@ -96,7 +96,7 @@ class block_revisionmanager extends block_base {
         $PAGE->requires->js_call_amd('block_revisionmanager/databasecommunicator', 'init', [$params]);
         
         $PAGE->requires->css('/blocks/revisionmanager/styles.css');
-//        $PAGE->requires->js_call_amd('block_revisionmanager/boooktocmarker', 'init', [['courseid' => $COURSE->id]]);
+        $PAGE->requires->js_call_amd('block_revisionmanager/boooktocmarker', 'init', [['courseid' => $COURSE->id]]);
         
         return $this->content;
     }
