@@ -17,7 +17,8 @@ define(['jquery', 'core/ajax'], function($, Ajax) {
                         console.log('Checking:', fullpath);
                         if (visited.includes(fullpath)) {
                             console.log('Matched:', fullpath);
-                            $(this).addClass('read-chapter');
+//                            $(this).addClass('read-chapter');
+                            $(this).prepend('✅ ');
                         }
                     });
                 },
