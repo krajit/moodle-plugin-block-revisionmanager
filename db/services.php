@@ -31,4 +31,11 @@ $functions = [
         'ajax' => true,
 
     ],
+    'block_revisionmanager_get_nextreview' => [
+        'classname' => 'block_revisionmanager\external\get_nextreview',
+        'methodname' => 'execute',
+        'description' => 'extract review date for a page',
+        'type' => 'read',
+        'ajax' => true,
+    ],
 ];

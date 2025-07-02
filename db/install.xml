@@ -14,7 +14,6 @@
           <FIELD NAME="ratingvalue" TYPE="int" LENGTH="1" NOTNULL="true"/>
           <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true"/>
           <FIELD NAME="pageurl" TYPE="char" LENGTH="256" NOTNULL="true" SEQUENCE="false"/>
-          <FIELD NAME="nextreview" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
           <FIELD NAME="pagetitle" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
           <FIELD NAME="chapterid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
         </FIELDS>

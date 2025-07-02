@@ -151,9 +151,28 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
                 }]);
             }
 
+            loadExistingData();
 
             $('#nextReview').on('input change', saveNextReviewDate);
-            loadExistingData();
+
+            function loadExistingReviewDate() {
+                Ajax.call([{
+                    methodname: 'block_revisionmanager_get_nextreview',
+                    args: {
+                        pageid: params.pageid,
+                        courseid: params.courseid,
+                        chapterid: params.chapterid || null
+                    },
+                    done: function(data) {
+                        if (data.nextreview) {
+                            $('#nextReview').val(data.nextreview);
+                        }
+                    },
+                    fail: Notification.exception
+                }]);
+            }
+            loadExistingReviewDate();
+            
         }
     };
 });
