@@ -38,7 +38,7 @@ class block_revisionmanager extends block_base {
      * @return stdClass The block contents.
      */
     public function get_content() {
-        global $OUTPUT, $PAGE, $COURSE;
+        global $OUTPUT, $PAGE, $COURSE, $DB;
 
         // Block only visible on mod_lesson view.php pages.
         // TODO: Extend this block to be visible on other activity pages
@@ -73,15 +73,25 @@ class block_revisionmanager extends block_base {
             $this->content->text = $text;
         }
 
+        $chapterid = null;
+        // get default chapterid
+        if (optional_param('chapterid', 0, PARAM_INT)) {
+            $chapterid = optional_param('chapterid', 0, PARAM_INT);
+        } else if ($PAGE->cm->modname === 'book') {
+                // No chapter specified, get first chapter
+                $cm = get_coursemodule_from_id('book', $PAGE->cm->id, 0, false, MUST_EXIST);
+                $book = $DB->get_record('book', ['id' => $cm->instance], '*', MUST_EXIST);
+                $chapters = $DB->get_records('book_chapters', ['bookid' => $book->id], 'pagenum ASC');
+                $firstchapter = reset($chapters);
+                $chapterid = $firstchapter->id;
+        }
         $params = [
             'courseid' => $COURSE->id,
             'pagetitle' => $PAGE->title,
             'pageid' => $PAGE->cm->id,
-            'chapterid' => null
+            'chapterid' =>$chapterid            
         ];
-        if (optional_param('chapterid', 0, PARAM_INT)) {
-            $params['chapterid'] = optional_param('chapterid', 0, PARAM_INT);
-        }
+       
 
         $PAGE->requires->js_call_amd('block_revisionmanager/databasecommunicator', 'init', [$params]);
         
