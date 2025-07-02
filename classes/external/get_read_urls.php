@@ -30,17 +30,37 @@ class get_read_urls extends external_api {
             'courseid' => $courseid
         ]);
 
-        $urls = array_map(function($r) {
-            return $r->pageurl;
-        }, $records);
+        // Group all rating values by pageurl
+        $urlmap = [];
+        foreach ($records as $r) {
+            $url = $r->pageurl;
+            if (!isset($urlmap[$url])) {
+                $urlmap[$url] = [];
+            }
+            $urlmap[$url][] = $r->ratingvalue;
+        }
 
-        return ['urls' => array_values($urls)];
+        // Format for return
+        $results = [];
+        foreach ($urlmap as $pageurl => $ratings) {
+            $results[] = [
+                'pageurl' => $pageurl,
+                'ratingvalues' => $ratings
+            ];
+        }
+
+        return ['entries' => $results];
     }
 
     public static function execute_returns() {
         return new external_single_structure([
-            'urls' => new external_multiple_structure(
-                new external_value(PARAM_RAW)
+            'entries' => new external_multiple_structure(
+                new external_single_structure([
+                    'pageurl' => new external_value(PARAM_RAW),
+                    'ratingvalues' => new external_multiple_structure(
+                        new external_value(PARAM_INT)
+                    )
+                ])
             )
         ]);
     }
