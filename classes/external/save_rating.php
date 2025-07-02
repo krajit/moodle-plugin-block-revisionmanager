@@ -20,7 +20,6 @@ class save_rating extends external_api {
             'ratingvalue' => new external_value(PARAM_INT),
             'ratingdate' => new external_value(PARAM_INT),
             'pageurl' => new external_value(PARAM_RAW, 'Page URL'),
-            'nextreview' => new external_value(PARAM_TEXT, 'Next review date (Y-m-d)'),
             'pagetitle' => new external_value(PARAM_TEXT, 'Page Title'),
             'chapterid' => new external_value(PARAM_INT, 'Chapter Id'),
             'ratingkey' => new external_value(PARAM_INT, 'Existing rating id to update (optional)', VALUE_DEFAULT, 0)
@@ -28,7 +27,7 @@ class save_rating extends external_api {
     }
 
     public static function save_rating($courseid, $pageid, $ratingvalue, $ratingdate,
-        $pageurl, $nextreview, $pagetitle, $chapterid, $ratingkey = 0) {
+        $pageurl, $pagetitle, $chapterid, $ratingkey = 0) {
         global $DB, $USER;
 
         $record = new \stdClass();
@@ -39,7 +38,6 @@ class save_rating extends external_api {
         $record->ratingdate = $ratingdate;
         $record->timemodified = time();
         $record->pageurl = $pageurl;
-        $record->nextreview = $nextreview;
         $record->pagetitle = $pagetitle;
         $record->chapterid = $chapterid;
 

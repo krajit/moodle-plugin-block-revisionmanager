@@ -58,7 +58,6 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
                 const rating = parseInt(valueInput.value);
                 const date = dateInput.value;
                 const timestamp = Math.floor(new Date(date).getTime() / 1000);
-                const nextreview = $('#nextReview').val();
                 const ratingKey = editingDiv?.dataset?.key || null;
 
                 if (isNaN(rating) || rating < 0 || rating > 5) {
@@ -74,7 +73,6 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
                         ratingvalue: rating,
                         ratingdate: timestamp,
                         pageurl: pageurl,
-                        nextreview: nextreview,
                         pagetitle: params.pagetitle,
                         chapterid: params.chapterid || null,
                         ratingkey: ratingKey // used to identify old entry if editing
