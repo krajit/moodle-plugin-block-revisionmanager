@@ -22,5 +22,19 @@
           <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
         </KEYS>
     </TABLE>
+    <TABLE NAME="block_revisionmanager_nextreview" COMMENT="Stores each pages next review date">
+        <FIELDS>
+          <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+          <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true"/>
+          <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true"/>
+          <FIELD NAME="pageid" TYPE="int" LENGTH="10" NOTNULL="true"/>
+          <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true"/>
+          <FIELD NAME="nextreview" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+          <FIELD NAME="chapterid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+        </FIELDS>
+        <KEYS>
+          <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        </KEYS>
+    </TABLE>
   </TABLES>
 </XMLDB>

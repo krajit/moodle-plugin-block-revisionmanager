@@ -22,5 +22,13 @@ $functions = [
         'type'        => 'read',
         'ajax'        => true,
         'capabilities' => ''
-    ]
+    ],
+    'block_revisionmanager_save_nextreview' => [
+        'classname' => 'block_revisionmanager\external\save_nextreview',
+        'methodname' => 'save_nextreview',
+        'description' => 'Save next review date for a page',
+        'type' => 'write',
+        'ajax' => true,
+
+    ],
 ];

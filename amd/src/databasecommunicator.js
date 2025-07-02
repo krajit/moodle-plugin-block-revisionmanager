@@ -54,8 +54,7 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
                 e.stopPropagation();
             });
 
-            // === Save (create or update) rating ===
-            saveBtn?.addEventListener('click', () => {
+            function saveData () {
                 const rating = parseInt(valueInput.value);
                 const date = dateInput.value;
                 const timestamp = Math.floor(new Date(date).getTime() / 1000);
@@ -97,7 +96,12 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
                     },
                     fail: Notification.exception
                 }]);
-            });
+            }
+
+
+
+            // === Save (create or update) rating ===
+            saveBtn?.addEventListener('click', saveData);
 
             // === Hide popup if clicking outside ===
             document.addEventListener('click', (e) => {
@@ -106,24 +110,50 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
                 }
             });
 
-            // === Load existing ratings from server ===
-            Ajax.call([{
-                methodname: 'block_revisionmanager_get_ratings',
-                args: {
-                    courseid: params.courseid,
-                    pageid: params.pageid,
-                    chapterid: params.chapterid || null
-                },
-                done: function(ratings) {
-                    ratings.forEach(r => {
-                        const d = new Date(r.ratingdate * 1000);
-                        const dateStr = d.toISOString().split('T')[0];
-                        const div = createRatingSquare(r.ratingvalue, dateStr, r.ratingkey);
-                        grid.insertBefore(div, plusBtn);
-                    });
-                },
-                fail: Notification.exception
-            }]);
+            function loadExistingData() {
+                // === Load existing ratings from server ===
+                Ajax.call([{
+                    methodname: 'block_revisionmanager_get_ratings',
+                    args: {
+                        courseid: params.courseid,
+                        pageid: params.pageid,
+                        chapterid: params.chapterid || null
+                    },
+                    done: function(ratings) {
+                        ratings.forEach(r => {
+                            const d = new Date(r.ratingdate * 1000);
+                            const dateStr = d.toISOString().split('T')[0];
+                            const div = createRatingSquare(r.ratingvalue, dateStr, r.ratingkey);
+                            grid.insertBefore(div, plusBtn);
+                        });
+                    },
+                    fail: Notification.exception
+                }]);
+            }
+
+            function saveNextReviewDate() {
+                var date = $('#nextReview').val();
+                if (!date) { date = ''; }
+
+                Ajax.call([{
+                    methodname: 'block_revisionmanager_save_nextreview',
+                    args: {
+                        pageid: params.pageid,
+                        courseid: params.courseid,
+                        nextreview: date,
+                        pageurl: pageurl,                        
+                        chapterid: params.chapterid || null
+                    },
+                    done: function(response) {
+                        console.log('next review date tweaked:', response.status);
+                    },
+                    fail: Notification.exception
+                }]);
+            }
+
+
+            $('#nextReview').on('input change', saveNextReviewDate);
+            loadExistingData();
         }
     };
 });
