@@ -77,12 +77,17 @@ if ($course) {
 
 // Define SQL and render table.
 $table->set_sql(
-    "m.id, m.courseid, m.timemodified, m.userid, m.pageurl, m.nextreview, m.pagetitle,
-    m.learninglevel, m.revisioncount, m.targetcount,
+    "m.id, m.courseid, m.timemodified, m.userid, m.pageurl, n.nextreview, m.pagetitle,
+    m.ratingvalue,
      c.shortname AS coursename {$userfieldssql->selects}",
-    "{block_revisionmanager_entries} m
+    "{block_revisionmanager_ratings} m
      LEFT JOIN {user} u ON u.id = m.userid
-     LEFT JOIN {course} c ON c.id = m.courseid",
+     LEFT JOIN {course} c ON c.id = m.courseid
+     JOIN {block_revisionmanager_nextreview} n
+      ON m.userid = n.userid
+        AND m.courseid = n.courseid
+        AND m.chapterid = n.chapterid
+        AND m.pageid = n.pageid",
     $where,
     $params
 );

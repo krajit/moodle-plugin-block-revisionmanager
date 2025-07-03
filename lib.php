@@ -28,8 +28,6 @@ function block_revisionmanager_extend_navigation_frontpage(navigation_node $fron
     $hasblock = $DB->record_exists('block_instances', [
         'blockname' => 'revisionmanager',
     ]);
-
-
     if (isloggedin() && !isguestuser() && $hasblock) {
         $frontpage->add(
             get_string('navigationlabel', 'block_revisionmanager'),
@@ -47,7 +45,6 @@ function block_revisionmanager_extend_navigation_course(navigation_node $coursen
         'blockname' => 'revisionmanager',
         'parentcontextid' => $context->id,
     ]);
-
     
     if ($hasblock && isloggedin() && !isguestuser()) {
         $url = new moodle_url('/blocks/revisionmanager/summary.php', ['courseid' => $course->id]);

@@ -44,9 +44,13 @@ class save_nextreview extends external_api {
         if ($existing) {
             $record->id = $existing->id; // ✅ Ensure ID is set before update
             $DB->update_record('block_revisionmanager_nextreview', $record);
+
         } else {
             $DB->insert_record('block_revisionmanager_nextreview', $record);
         }
+
+        // delete records for which revision date not chosen
+        $DB->delete_records('block_revisionmanager_nextreview', ['nextreview' => 0]);
         return ['status' => 'success'];
     }
 
