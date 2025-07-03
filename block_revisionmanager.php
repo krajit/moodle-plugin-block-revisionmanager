@@ -69,7 +69,7 @@ class block_revisionmanager extends block_base {
         if (!empty($this->config->text)) {
             $this->content->text = $this->config->text;
         } else {
-            $text = $OUTPUT->render_from_template('block_revisionmanager/learningtracker',[]);
+            $text = $OUTPUT->render_from_template('block_revisionmanager/learningtracker',['dashboardurl'=>$url]);
             $this->content->text = $text;
         }
 

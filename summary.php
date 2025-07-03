@@ -75,22 +75,47 @@ if ($course) {
     $params['courseid'] = $course->id;
 }
 
-// Define SQL and render table.
+// // Define SQL and render table.
+// $table->set_sql(
+//     "m.id, m.courseid, m.timemodified, m.userid, m.pageurl, n.nextreview, m.pagetitle,
+//     m.ratingvalue, m.ratingdate,
+//      c.shortname AS coursename {$userfieldssql->selects}",
+//     "{block_revisionmanager_ratings} m
+//      LEFT JOIN {user} u ON u.id = m.userid
+//      LEFT JOIN {course} c ON c.id = m.courseid
+//      JOIN {block_revisionmanager_nextreview} n
+//       ON m.userid = n.userid
+//         AND m.courseid = n.courseid
+//         AND m.pageid = n.pageid",
+//     $where,
+//     $params
+// );
+
 $table->set_sql(
     "m.id, m.courseid, m.timemodified, m.userid, m.pageurl, n.nextreview, m.pagetitle,
-    m.ratingvalue,
-     c.shortname AS coursename {$userfieldssql->selects}",
+    m.ratingvalue, m.ratingdate,
+    c.shortname AS coursename {$userfieldssql->selects}",
     "{block_revisionmanager_ratings} m
+     INNER JOIN (
+         SELECT userid, courseid, pageid, MAX(ratingdate) AS max_ratingdate
+         FROM {block_revisionmanager_ratings}
+         GROUP BY userid, courseid, pageid
+     ) latest ON
+         latest.userid = m.userid AND
+         latest.courseid = m.courseid AND
+         latest.pageid = m.pageid AND
+         latest.max_ratingdate = m.ratingdate
      LEFT JOIN {user} u ON u.id = m.userid
      LEFT JOIN {course} c ON c.id = m.courseid
      JOIN {block_revisionmanager_nextreview} n
-      ON m.userid = n.userid
-        AND m.courseid = n.courseid
-        AND m.chapterid = n.chapterid
-        AND m.pageid = n.pageid",
+         ON m.userid = n.userid
+         AND m.courseid = n.courseid
+         AND m.pageid = n.pageid",
     $where,
     $params
 );
+
+
 
 $table->sortable(true, 'nextreview', SORT_DESC);
 $table->define_baseurl($PAGE->url);
