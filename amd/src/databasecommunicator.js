@@ -65,6 +65,10 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
                     return;
                 }
 
+                var temppageurl = pageurl;
+                if (pageurl.includes("book") && !pageurl.includes("chapterid")) {
+                    temppageurl += `&chapterid=${params.chapterid}`;
+                }
                 Ajax.call([{
                     methodname: 'block_revisionmanager_save_rating',
                     args: {
@@ -72,7 +76,7 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
                         pageid: params.pageid,
                         ratingvalue: rating,
                         ratingdate: timestamp,
-                        pageurl: pageurl,
+                        pageurl: temppageurl,
                         pagetitle: params.pagetitle,
                         chapterid: params.chapterid || null,
                         ratingkey: ratingKey // used to identify old entry if editing

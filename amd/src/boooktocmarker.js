@@ -12,13 +12,10 @@ define(['jquery', 'core/ajax'], function($, Ajax) {
                     urlRatingsMap[cleanUrl] = entry.ratingvalues;
                 });
 
-                console.log('URL to ratings map:', urlRatingsMap);
-
                 $('div.book_toc a').each(function() {
                     const href = $(this).attr('href');
                     const fullpath = 'mod/book/' + href;
-
-                    if (urlRatingsMap[fullpath]) {
+                if (urlRatingsMap[fullpath]) {
                         const ratings = urlRatingsMap[fullpath];
 
                         // Build span-wrapped ratings with background classes
