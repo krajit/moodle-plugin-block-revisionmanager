@@ -24,7 +24,7 @@ define(['jquery', 'core/ajax'], function($, Ajax) {
                         // Build span-wrapped ratings with background classes
                         const ratingHtml = ratings.map(rating => {
                             const clampedRating = Math.max(0, Math.min(5, rating)); // Ensure 0–5
-                            return `<span class="bg-rating-${clampedRating}">${clampedRating}</span>`;
+                            return `<span class="bg-rating-toc-${clampedRating}">${clampedRating}</span>`;
                         }).join('');
 
                         $(this).prepend(ratingHtml+' ');
