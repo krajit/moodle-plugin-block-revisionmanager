@@ -22,6 +22,8 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+
+require_once(__DIR__ . '/libclasstracker.php');
 class block_revisionmanager extends block_base {
 
     /**
@@ -66,14 +68,6 @@ class block_revisionmanager extends block_base {
         // $gearicon = $OUTPUT->pix_icon('i/settings', get_string('settings'));
         // $this->content->footer = html_writer::link($url, "Course Review Dashboard", []);
 
-        if (!empty($this->config->text)) {
-            $this->content->text = $this->config->text;
-        } else {
-            $text = $OUTPUT->render_from_template('block_revisionmanager/learningtracker',['dashboardurl'=>$url]);
-            $text = $text . $OUTPUT->render_from_template('block_revisionmanager/classtracker',[]);
-            $this->content->text = $text;
-        }
-
         $chapterid = null;
         // get default chapterid
         if (optional_param('chapterid', 0, PARAM_INT)) {
@@ -86,6 +80,21 @@ class block_revisionmanager extends block_base {
                 $firstchapter = reset($chapters);
                 $chapterid = $firstchapter->id;
         }
+
+        
+
+        if (!empty($this->config->text)) {
+            $this->content->text = $this->config->text;
+        } else {
+
+            $text = $OUTPUT->render_from_template('block_revisionmanager/learningtracker',['dashboardurl'=>$url]);
+            $pageid = $PAGE->cm->id;
+            $classdata = block_revisionmanager_get_class_engagement_data($COURSE->id, $pageid, $chapterid);
+           
+            $text .= $OUTPUT->render_from_template('block_revisionmanager/classtracker',$classdata);
+            $this->content->text = $text;
+        }
+
         $params = [
             'courseid' => $COURSE->id,
             'pagetitle' => $PAGE->title,

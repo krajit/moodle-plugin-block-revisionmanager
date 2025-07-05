@@ -71,6 +71,7 @@
     cursor: pointer;
 }
 
+.bg-black       { background-color: rgb(16, 16, 16); }
 .bg-grey       { background-color: grey; }
 .bg-red        { background-color: red; }
 .bg-orange     { background-color: orange; }
