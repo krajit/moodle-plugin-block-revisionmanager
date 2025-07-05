@@ -1,4 +1,4 @@
-define(['core/modal_factory'], function(ModalFactory) {
+define(['core/modal_factory', 'core/modal'], function(ModalFactory, Modal) {
     return {
         init: function () {
             document.querySelectorAll('.segment').forEach(segment => {
@@ -13,30 +13,34 @@ define(['core/modal_factory'], function(ModalFactory) {
                         students = [];
                     }
 
-                    const modalRoot = document.getElementById('studentModal');
-                    const tbody = document.getElementById('studentModalTableBody');
-                    const titleEl = document.getElementById('studentModalLabel');
-
-                    titleEl.textContent = title;
-                    tbody.innerHTML = '';
-
+                    // Build HTML table dynamically
+                    let tableHtml = `
+                        <table class="table table-striped">
+                            <thead>
+                                <tr><th>Name</th><th>Email</th></tr>
+                            </thead>
+                            <tbody>
+                    `;
                     students.forEach(student => {
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `<td>${student.fullname}</td><td>${student.email}</td>`;
-                        tbody.appendChild(tr);
+                        tableHtml += `<tr><td>${student.fullname}</td><td>${student.email}</td></tr>`;
                     });
+                    tableHtml += '</tbody></table>';
 
-                    // Use Moodle's modal_factory to handle modal logic cleanly
-                    const modalInstance = await ModalFactory.create({
-                        title: title,
-                        body: modalRoot.querySelector('.modal-body'),
-                        type: ModalFactory.types.DEFAULT
-                    });
+                    try {
+                        const modal = await ModalFactory.create({
+                            title: title,
+                            body: tableHtml,
+                            type: ModalFactory.types.DEFAULT
+                        });
 
-                    modalInstance.show();
+                        modal.show();
 
-                    // Optional: remove the default one if needed
-                    modalRoot.classList.remove('show');
+                        modal.getRoot().on('hidden.bs.modal', () => {
+                            modal.destroy();
+                        });
+                    } catch (e) {
+                        console.error("Modal creation failed:", e);
+                    }
                 });
             });
         }
