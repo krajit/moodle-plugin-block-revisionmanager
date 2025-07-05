@@ -1,73 +1,130 @@
 <?php
+// File: libclasstracker.php
+
+defined('MOODLE_INTERNAL') || die();
+
+require_once($CFG->dirroot . '/lib/enrollib.php');
+
 /**
- * Get rating distribution for a specific course + page + optional chapter.
+ * Get engagement data grouped by rating values and unread users.
  *
  * @param int $courseid
  * @param int $pageid
- * @param int|null $chapterid Optional chapter ID (for mod_book pages)
+ * @param int|null $chapterid
  * @return array
  */
 function block_revisionmanager_get_class_engagement_data(int $courseid, int $pageid, ?int $chapterid = null): array {
     global $DB;
 
-    // 1. Total enrolled students.
-    $numtotalstudent = $DB->count_records_sql("
-        SELECT COUNT(DISTINCT ue.userid)
-        FROM {user_enrolments} ue
-        JOIN {enrol} e ON ue.enrolid = e.id
-        WHERE e.courseid = ?", [$courseid]);
-
-    // 2. Unique parameter names for subquery and outer query
-    $where_sub = "courseid = :courseid1 AND pageid = :pageid1";
-    $where_main = "r.courseid = :courseid2 AND r.pageid = :pageid2";
-
-    $params = [
-        'courseid1' => $courseid,
-        'pageid1' => $pageid,
-        'courseid2' => $courseid,
-        'pageid2' => $pageid
-    ];
-
-    if (!is_null($chapterid)) {
-        $where_sub .= " AND chapterid = :chapterid1";
-        $where_main .= " AND r.chapterid = :chapterid2";
-        $params['chapterid1'] = $chapterid;
-        $params['chapterid2'] = $chapterid;
+    // Step 1: Prepare SQL and parameters.
+    if ($chapterid !== null) {
+        $ratingsql = "
+            SELECT r.*
+            FROM {block_revisionmanager_ratings} r
+            INNER JOIN (
+                SELECT userid, MAX(ratingdate) AS maxdate
+                FROM {block_revisionmanager_ratings}
+                WHERE courseid = :courseid1 AND pageid = :pageid1 AND chapterid = :chapterid1
+                GROUP BY userid
+            ) latest ON r.userid = latest.userid AND r.ratingdate = latest.maxdate
+            WHERE r.courseid = :courseid2 AND pageid = :pageid2 AND chapterid = :chapterid2
+        ";
+        $ratingsparams = [
+            'courseid1' => $courseid,
+            'pageid1' => $pageid,
+            'chapterid1' => $chapterid,
+            'courseid2' => $courseid,
+            'pageid2' => $pageid,
+            'chapterid2' => $chapterid,
+        ];
+    } else {
+        $ratingsql = "
+            SELECT r.*
+            FROM {block_revisionmanager_ratings} r
+            INNER JOIN (
+                SELECT userid, MAX(ratingdate) AS maxdate
+                FROM {block_revisionmanager_ratings}
+                WHERE courseid = :courseid1 AND pageid = :pageid1
+                GROUP BY userid
+            ) latest ON r.userid = latest.userid AND r.ratingdate = latest.maxdate
+            WHERE r.courseid = :courseid2 AND pageid = :pageid2
+        ";
+        $ratingsparams = [
+            'courseid1' => $courseid,
+            'pageid1' => $pageid,
+            'courseid2' => $courseid,
+            'pageid2' => $pageid,
+        ];
     }
 
-    $ratingsql = "
-        SELECT r.userid, r.ratingvalue
-        FROM {block_revisionmanager_ratings} r
-        JOIN (
-            SELECT userid, MAX(ratingdate) AS maxdate
-            FROM {block_revisionmanager_ratings}
-            WHERE $where_sub
-            GROUP BY userid
-        ) latest ON latest.userid = r.userid AND latest.maxdate = r.ratingdate
-        WHERE $where_main
-    ";
+    // Step 2: Execute the query.
+    $latestratings = $DB->get_records_sql($ratingsql, $ratingsparams);
 
-    $latestratings = $DB->get_records_sql($ratingsql, $params);
+    // Step 3: Group users by ratingvalue.
+    $groupedUserIds = array_fill(0, 6, []);
+    $allRatedUserIds = [];
 
-    // 3. Count by rating buckets.
-    $counters = array_fill(0, 6, 0);
     foreach ($latestratings as $record) {
-        $val = (int)$record->ratingvalue;
-        if ($val >= 0 && $val <= 5) {
-            $counters[$val]++;
+        $rating = (int)$record->ratingvalue;
+        if ($rating >= 0 && $rating <= 5) {
+            $groupedUserIds[$rating][] = $record->userid;
+            $allRatedUserIds[] = $record->userid;
         }
     }
 
-    $numstudentsnotopened = $numtotalstudent - $counters[0] - $counters[1] - $counters[2] - $counters[3] - $counters[4] - $counters[5];
+    // Step 4: Fetch rated users’ details.
+    $allRatedUsers = [];
+    if (!empty($allRatedUserIds)) {
+        $allRatedUsers = $DB->get_records_list('user', 'id', array_unique($allRatedUserIds));
+    }
 
+    // Step 5: Create name/email lists per rating value.
+    $studentsByRating = [];
+    for ($i = 0; $i <= 5; $i++) {
+        $studentsByRating[$i] = [];
+        foreach ($groupedUserIds[$i] as $uid) {
+            if (isset($allRatedUsers[$uid])) {
+                $user = $allRatedUsers[$uid];
+                $studentsByRating[$i][] = [
+                    'fullname' => fullname($user),
+                    'email' => $user->email
+                ];
+            }
+        }
+    }
+
+    // Step 6: Get enrolled users.
+    $context = context_course::instance($courseid);
+    $enrolled = get_enrolled_users($context, '', 0, 'u.id, u.firstname, u.lastname, u.email');
+
+    // Step 7: Identify students who haven't opened the page.
+    $notOpened = [];
+    foreach ($enrolled as $user) {
+        if (!in_array($user->id, $allRatedUserIds)) {
+            $notOpened[] = [
+                'fullname' => fullname($user),
+                'email' => $user->email
+            ];
+        }
+    }
+
+    // Step 8: Return array for Mustache.
     return [
-        'numstudentsnotopened' => $numstudentsnotopened,
-        'num0student' => $counters[0],
-        'num1student' => $counters[1],
-        'num2student' => $counters[2],
-        'num3student' => $counters[3],
-        'num4student' => $counters[4],
-        'num5student' => $counters[5],
-        'numtotalstudent' => $numtotalstudent
+        'num0student' => count($studentsByRating[0]),
+        'num1student' => count($studentsByRating[1]),
+        'num2student' => count($studentsByRating[2]),
+        'num3student' => count($studentsByRating[3]),
+        'num4student' => count($studentsByRating[4]),
+        'num5student' => count($studentsByRating[5]),
+        'numstudentsnotopened' => count($notOpened),
+        'numtotalstudent' => count($enrolled),
+
+        'studentdata0' => json_encode($studentsByRating[0]),
+        'studentdata1' => json_encode($studentsByRating[1]),
+        'studentdata2' => json_encode($studentsByRating[2]),
+        'studentdata3' => json_encode($studentsByRating[3]),
+        'studentdata4' => json_encode($studentsByRating[4]),
+        'studentdata5' => json_encode($studentsByRating[5]),
+        'studentdatanotopened' => json_encode($notOpened)
     ];
 }
