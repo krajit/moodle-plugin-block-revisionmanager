@@ -98,6 +98,11 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
                             grid.insertBefore(div, plusBtn);
                         }
                         popup.style.display = 'none';
+                        
+                        // Optionally refresh the page after short delay
+                        setTimeout(() => {
+                            location.reload();
+                        }, 300);
                     },
                     fail: Notification.exception
                 }]);
