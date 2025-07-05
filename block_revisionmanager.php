@@ -70,6 +70,7 @@ class block_revisionmanager extends block_base {
             $this->content->text = $this->config->text;
         } else {
             $text = $OUTPUT->render_from_template('block_revisionmanager/learningtracker',['dashboardurl'=>$url]);
+            $text = $text . $OUTPUT->render_from_template('block_revisionmanager/classtracker',[]);
             $this->content->text = $text;
         }
 
@@ -94,9 +95,8 @@ class block_revisionmanager extends block_base {
        
 
         $PAGE->requires->js_call_amd('block_revisionmanager/databasecommunicator', 'init', [$params]);
-        
-        $PAGE->requires->css('/blocks/revisionmanager/styles.css');
         $PAGE->requires->js_call_amd('block_revisionmanager/boooktocmarker', 'init', [['courseid' => $COURSE->id]]);
+        $PAGE->requires->css('/blocks/revisionmanager/styles.css');
         
         return $this->content;
     }

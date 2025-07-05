@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bootstrap Horizontal Bar with Tooltips</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .bar-container {
+      display: flex;
+      height: 50px;
+      border: 1px solid #ccc;
+      margin-top: 20px;
+    }
+
+    .segment {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #000;
+      font-weight: bold;
+      font-size: 0.9rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      cursor: pointer;
+    }
+
+    .bg-grey       { background-color: grey; }
+    .bg-red        { background-color: red; }
+    .bg-orange     { background-color: orange; }
+    .bg-yellow     { background-color: yellow; }
+    .bg-lightgreen { background-color: lightgreen; }
+    .bg-green      { background-color: green; }
+  </style>
+</head>
+<body class="container">
+
+  <h4 class="mt-4">Horizontal Bar Chart with Tooltips</h4>
+
+  <div class="bar-container rounded">
+    <div class="segment bg-grey" style="flex: 10;" data-bs-toggle="tooltip" title="Grey: 10 out of 103">9.7%</div>
+    <div class="segment bg-red" style="flex: 4;" data-bs-toggle="tooltip" title="Red: 4 out of 103">3.9%</div>
+    <div class="segment bg-orange" style="flex: 25;" data-bs-toggle="tooltip" title="Orange: 25 out of 103">24.3%</div>
+    <div class="segment bg-yellow" style="flex: 20;" data-bs-toggle="tooltip" title="Yellow: 20 out of 103">19.4%</div>
+    <div class="segment bg-lightgreen" style="flex: 14;" data-bs-toggle="tooltip" title="Light Green: 14 out of 103">13.6%</div>
+    <div class="segment bg-green" style="flex: 30;" data-bs-toggle="tooltip" title="Green: 30 out of 103">29.1%</div>
+  </div>
+
+  <!-- Bootstrap JS bundle (includes Popper) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Initialize tooltips -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+      tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+        new bootstrap.Tooltip(tooltipTriggerEl);
+      });
+    });
+  </script>
+
+</body>
+</html>

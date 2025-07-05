@@ -51,3 +51,29 @@
 .bg-rating-toc-4 { background-color: #90ee90; color: #90ee90; margin-right: 1px;}  /* light green */
 .bg-rating-toc-5 { background-color: #28a745; color: #28a745; margin-right: 1px;}  /* bright green */
 
+.bar-container {
+    display: flex;
+    height: 50px;
+    border: 1px solid #ccc;
+    margin-top: 20px;
+}
+
+.segment {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000;
+    font-weight: bold;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+
+.bg-grey       { background-color: grey; }
+.bg-red        { background-color: red; }
+.bg-orange     { background-color: orange; }
+.bg-yellow     { background-color: yellow; }
+.bg-lightgreen { background-color: lightgreen; }
+.bg-green      { background-color: green; }
