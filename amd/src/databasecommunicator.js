@@ -35,7 +35,9 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
                     const containerRect = grid.getBoundingClientRect();
                     const x = rect.left - containerRect.left + grid.scrollLeft;
                     const y = rect.top - containerRect.top + 45;
-                    openPopup(x, y, rating, date);
+                    const currentRating = div.dataset.rating;
+                    const currentDate = div.dataset.date;
+                    openPopup(x, y, currentRating, currentDate);
                     e.stopPropagation();
                 });
 
@@ -57,7 +59,8 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
             function saveData () {
                 const rating = parseInt(valueInput.value);
                 const date = dateInput.value;
-                const timestamp = Math.floor(new Date(date).getTime() / 1000);
+                //const timestamp = Math.floor(new Date(date).getTime() / 1000);
+                const timestamp = date ? Math.floor(new Date(date).getTime() / 1000) : 0;
                 const ratingKey = editingDiv?.dataset?.key || null;
 
                 if (isNaN(rating) || rating < 0 || rating > 5) {
@@ -98,6 +101,8 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
                     },
                     fail: Notification.exception
                 }]);
+            
+                location.reload();
             }
 
 
