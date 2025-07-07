@@ -28,7 +28,7 @@ class get_read_urls extends external_api {
         $records = $DB->get_records('block_revisionmanager_ratings', [
             'userid' => $USER->id,
             'courseid' => $courseid
-        ]);
+        ],'ratingdate ASC, timemodified ASC');
 
         // Group all rating values by pageurl
         $urlmap = [];

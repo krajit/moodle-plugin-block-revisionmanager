@@ -31,8 +31,10 @@ define(['jquery', 'core/ajax'], function($, Ajax) {
 
               $('div.book_toc li:has(strong)').each(function() {
                  const $strong = $(this).find('strong');
-                    console.log(pageurl);
-                    const cleanUrl = pageurl.startsWith('/') ? pageurl.substring(1) : pageurl;
+                    var cleanUrl = pageurl.startsWith('/') ? pageurl.substring(1) : pageurl;
+                    if (!cleanUrl.includes("chapterid")) {
+                        cleanUrl = cleanUrl + "&chapterid="+params.chapterid;
+                    }
 
                  if (urlRatingsMap[cleanUrl]) {
                         const ratings = urlRatingsMap[cleanUrl];
@@ -44,15 +46,11 @@ define(['jquery', 'core/ajax'], function($, Ajax) {
                         }).join('');
 
                         $strong.prepend(ratingHtml+' ');
-                        
                     }
-
                 });
-
-
             },
             fail: function(err) {
-                console.error("Could not fetch read URLs", err);
+                window.console.error("Could not fetch read URLs", err);
             }
         }]);
 

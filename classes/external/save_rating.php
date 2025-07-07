@@ -48,6 +48,11 @@ class save_rating extends external_api {
             $ratingkey = $DB->insert_record('block_revisionmanager_ratings', $record);
         }
 
+        // clean up all the records if which reading date not selected
+        $DB->delete_records('block_revisionmanager_ratings', [
+            'ratingdate' => 0,
+        ]);
+
         return ['status' => 'success', 'ratingkey' => $ratingkey];
     }
 

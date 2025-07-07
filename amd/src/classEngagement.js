@@ -1,4 +1,4 @@
-define(['core/modal_factory', 'core/modal'], function(ModalFactory, Modal) {
+define(['core/modal_factory'], function(ModalFactory) {
     return {
         init: function () {
             document.querySelectorAll('.segment').forEach(segment => {
@@ -39,7 +39,7 @@ define(['core/modal_factory', 'core/modal'], function(ModalFactory, Modal) {
                             modal.destroy();
                         });
                     } catch (e) {
-                        console.error("Modal creation failed:", e);
+                        window.console.error("Modal creation failed:", e);
                     }
                 });
             });

@@ -11,6 +11,14 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
 
             let editingDiv = null; // null when adding new, non-null when editing
 
+            /**
+             * Opens the rating popup at the given coordinates and pre-fills values.
+             *
+             * @param {number} x - The x-coordinate for the popup.
+             * @param {number} y - The y-coordinate for the popup.
+             * @param {string} [rating=''] - The rating value to set in the popup.
+             * @param {string} [date=''] - The date value to set in the popup.
+             */
             function openPopup(x, y, rating = '', date = '') {
                 popup.style.position = 'absolute';
                 popup.style.left = `${x}px`;
@@ -20,6 +28,15 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
                 dateInput.value = date;
             }
 
+            /**
+             * Creates a clickable rating square element with attached event listener
+             * to open the rating popup.
+             *
+             * @param {string} rating - The rating value to display.
+             * @param {string} date - The associated date for the rating.
+             * @param {string} uniqueKey - A unique identifier for the rating.
+             * @returns {HTMLDivElement} The created rating square element.
+             */
             function createRatingSquare(rating, date, uniqueKey) {
                 const div = document.createElement('div');
                 div.className = `rating-square bg-rating-${rating}`;
@@ -56,6 +73,12 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
                 e.stopPropagation();
             });
 
+
+            /**
+             * Saves the rating and date for the current page.
+             * If editing an existing rating, updates it; otherwise, creates a new one.
+             * Performs basic validation and handles Moodle AJAX call.
+             */
             function saveData () {
                 const rating = parseInt(valueInput.value);
                 const date = dateInput.value;
@@ -98,16 +121,12 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
                             grid.insertBefore(div, plusBtn);
                         }
                         popup.style.display = 'none';
-                        
                         // Optionally refresh the page after short delay
-                        setTimeout(() => {
-                            location.reload();
-                        }, 300);
+                        location.reload();
                     },
                     fail: Notification.exception
                 }]);
-            
-                location.reload();
+                //location.reload();
             }
 
 
@@ -122,6 +141,10 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
                 }
             });
 
+            /**
+             * Loads existing rating data from the server and populates the rating grid.
+             * Each rating is converted to a readable date and displayed using rating squares.
+             */
             function loadExistingData() {
                 // === Load existing ratings from server ===
                 Ajax.call([{
@@ -143,6 +166,10 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
                 }]);
             }
 
+            /**
+             * Saves the next review date for the current page by sending it to the server.
+             * If no date is selected, an empty string is sent.
+             */
             function saveNextReviewDate() {
                 var date = $('#nextReview').val();
                 if (!date) { date = ''; }
@@ -153,11 +180,11 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
                         pageid: params.pageid,
                         courseid: params.courseid,
                         nextreview: date,
-                        pageurl: pageurl,                        
+                        pageurl: pageurl,
                         chapterid: params.chapterid || null
                     },
                     done: function(response) {
-                        console.log('next review date tweaked:', response.status);
+                        window.console.log('next review date tweaked:', response.status);
                     },
                     fail: Notification.exception
                 }]);
@@ -167,6 +194,9 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
 
             $('#nextReview').on('input change', saveNextReviewDate);
 
+            /**
+             * Loads the saved next review date from the server and populates the input field.
+             */
             function loadExistingReviewDate() {
                 Ajax.call([{
                     methodname: 'block_revisionmanager_get_nextreview',
@@ -184,8 +214,6 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
                 }]);
             }
             loadExistingReviewDate();
-            
-            
         }
     };
 });
