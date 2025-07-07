@@ -97,20 +97,22 @@ $table->set_sql(
     c.shortname AS coursename {$userfieldssql->selects}",
     "{block_revisionmanager_ratings} m
      INNER JOIN (
-         SELECT userid, courseid, pageid, MAX(ratingdate) AS max_ratingdate
+         SELECT userid, courseid, pageid, chapterid, MAX(ratingdate) AS max_ratingdate
          FROM {block_revisionmanager_ratings}
-         GROUP BY userid, courseid, pageid
+         GROUP BY userid, courseid, pageid, chapterid
      ) latest ON
          latest.userid = m.userid AND
          latest.courseid = m.courseid AND
          latest.pageid = m.pageid AND
+         latest.chapterid = m.chapterid AND
          latest.max_ratingdate = m.ratingdate
      LEFT JOIN {user} u ON u.id = m.userid
      LEFT JOIN {course} c ON c.id = m.courseid
      JOIN {block_revisionmanager_nextreview} n
          ON m.userid = n.userid
          AND m.courseid = n.courseid
-         AND m.pageid = n.pageid",
+         AND m.pageid = n.pageid
+         AND m.chapterid = n.chapterid",
     $where,
     $params
 );
