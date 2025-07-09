@@ -5,9 +5,14 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
             const plusBtn = document.getElementById('plusBtn');
             const popup = document.getElementById('rating-popup');
             const dateInput = document.getElementById('rating-date');
-            const valueInput = document.getElementById('rating-value');
+            //const valueInput = document.getElementById('rating-value');
             const saveBtn = document.getElementById('rating-save');
             const pageurl = window.location.pathname + window.location.search;
+
+            function getSelectedRating() {
+               const selected = document.querySelector('input[name="rating-value"]:checked');
+                return selected ? parseInt(selected.value) : null;
+            }
 
             let editingDiv = null; // null when adding new, non-null when editing
 
@@ -24,8 +29,18 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
                 popup.style.left = `${x}px`;
                 popup.style.top = `${y}px`;
                 popup.style.display = 'block';
-                valueInput.value = rating;
+                //valueInput.value = rating;
                 dateInput.value = date;
+                // Deselect any previously selected
+                document.querySelectorAll('input[name="rating-value"]').forEach(r => r.checked = false);
+
+                // Select current
+                if (rating !== '') {
+                    const selectedRadio = document.querySelector(`input[name="rating-value"][value="${rating}"]`);
+                    if (selectedRadio) {
+                        selectedRadio.checked = true;
+                    }
+                }
             }
 
             /**
@@ -80,7 +95,8 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notificat
              * Performs basic validation and handles Moodle AJAX call.
              */
             function saveData () {
-                const rating = parseInt(valueInput.value);
+                //const rating = parseInt(valueInput.value);
+                const rating = getSelectedRating();
                 const date = dateInput.value;
                 //const timestamp = Math.floor(new Date(date).getTime() / 1000);
                 const timestamp = date ? Math.floor(new Date(date).getTime() / 1000) : 0;

@@ -12,8 +12,29 @@
     <div id="rating-popup" class="popup-form" style="display: none;">
         <label class="form-label mb-1">Date</label>
         <input type="date" class="form-control form-control-sm mb-2" id="rating-date">
-        <label class="form-label mb-1">Rating (0–5)</label>
-        <input type="number" min="0" max="5" class="form-control form-control-sm mb-2" id="rating-value">
+        <label class="form-label mb-1">Self Rating</label>
+        <div class="btn-group mb-2 w-100" role="group" aria-label="Rating selection">
+            <input type="radio" class="btn-check" name="rating-value" id="rating0" value="0" autocomplete="off">
+            <label class="btn btn-sm bg-rating-0 px-2 py-1" for="rating0">0</label>
+
+            <input type="radio" class="btn-check" name="rating-value" id="rating1" value="1" autocomplete="off">
+            <label class="btn btn-sm bg-rating-1 px-2 py-1" for="rating1">1</label>
+
+            <input type="radio" class="btn-check" name="rating-value" id="rating2" value="2" autocomplete="off">
+            <label class="btn btn-sm bg-rating-2 px-2 py-1" for="rating2">2</label>
+
+            <input type="radio" class="btn-check" name="rating-value" id="rating3" value="3" autocomplete="off">
+            <label class="btn btn-sm bg-rating-3 px-2 py-1" for="rating3">3</label>
+
+            <input type="radio" class="btn-check" name="rating-value" id="rating4" value="4" autocomplete="off">
+            <label class="btn btn-sm bg-rating-4 px-2 py-1" for="rating4">4</label>
+
+            <input type="radio" class="btn-check" name="rating-value" id="rating5" value="5" autocomplete="off">
+            <label class="btn btn-sm bg-rating-5 px-2 py-1" for="rating5">5</label>
+        </div>
+
+
+
         <button class="btn btn-sm btn-primary w-100" id="rating-save">Save</button>
     </div>
 

@@ -87,7 +87,8 @@ class block_revisionmanager extends block_base {
             $this->content->text = $this->config->text;
         } else {
 
-            $text = $OUTPUT->render_from_template('block_revisionmanager/learningtracker',['dashboardurl'=>$url]);
+            $text = $OUTPUT->render_from_template('block_revisionmanager/learningtracker',
+                        ['dashboardurl'=>$url]);
             $pageid = $PAGE->cm->id;
             $classdata = block_revisionmanager_get_class_engagement_data($COURSE->id, $pageid, $chapterid);
            
