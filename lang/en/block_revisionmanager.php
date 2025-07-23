@@ -28,3 +28,5 @@ defined('MOODLE_INTERNAL') || die();
 $string['pluginname'] = 'Revision Manager';
 $string['navigationlabel'] = 'Revision Dashboard';
 $string['summary'] = 'Revision Summary Table';
+
+$string['event_rating_saved'] = 'Students rates himself';
