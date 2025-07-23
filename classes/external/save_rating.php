@@ -46,28 +46,34 @@ class save_rating extends external_api {
             $DB->update_record('block_revisionmanager_ratings', $record);
         } else {
             $ratingkey = $DB->insert_record('block_revisionmanager_ratings', $record);
+            \block_revisionmanager\event\rating_saved::create(array(
+                'context' => \context_course::instance($courseid),
+                'courseid' => $courseid,
+                 'userid' => $USER->id,
+                'other'   => array('ratingkey' => $ratingkey, 'ratingvalue' => $ratingvalue)
+            ))->trigger();
         }
 
         // clean up all the records if which reading date not selected
         $DB->delete_records('block_revisionmanager_ratings', [
-            'ratingdate' => 0,
+            'ratingdate'=> 0,
         ]);
 
-        return ['status' => 'success', 'ratingkey' => $ratingkey];
+        return ['status'=> 'success', 'ratingkey'=> $ratingkey];
     }
 
     public static function save_rating_returns() {
         return new external_single_structure([
-            'status' => new external_value(PARAM_TEXT),
-            'ratingkey' => new external_value(PARAM_INT, 'The id of the saved record')
+            'status'=> new external_value(PARAM_TEXT),
+            'ratingkey'=> new external_value(PARAM_INT, 'The id of the saved record')
         ]);
     }
 
     public static function get_ratings_parameters() {
         return new external_function_parameters([
-            'courseid' => new external_value(PARAM_INT),
-            'pageid' => new external_value(PARAM_INT),
-            'chapterid' => new external_value(PARAM_INT),
+            'courseid'=> new external_value(PARAM_INT),
+            'pageid'=> new external_value(PARAM_INT),
+            'chapterid'=> new external_value(PARAM_INT),
         ]);
     }
 
@@ -75,18 +81,18 @@ class save_rating extends external_api {
         global $DB, $USER;
 
         $records = $DB->get_records('block_revisionmanager_ratings', [
-            'userid' => $USER->id,
-            'courseid' => $courseid,
-            'pageid' => $pageid,
-            'chapterid' => $chapterid,
+            'userid'=> $USER->id,
+            'courseid'=> $courseid,
+            'pageid'=> $pageid,
+            'chapterid'=> $chapterid,
         ], 'ratingdate ASC');
 
         $result = [];
         foreach ($records as $r) {
             $result[] = [
-                'ratingkey' => $r->id,
-                'ratingdate' => $r->ratingdate,
-                'ratingvalue' => $r->ratingvalue
+                'ratingkey'=> $r->id,
+                'ratingdate'=> $r->ratingdate,
+                'ratingvalue'=> $r->ratingvalue
             ];
         }
 
@@ -96,9 +102,9 @@ class save_rating extends external_api {
     public static function get_ratings_returns() {
         return new external_multiple_structure(
             new external_single_structure([
-                'ratingkey' => new external_value(PARAM_INT, 'Primary key of rating'),
-                'ratingdate' => new external_value(PARAM_INT),
-                'ratingvalue' => new external_value(PARAM_INT),
+                'ratingkey'=> new external_value(PARAM_INT, 'Primary key of rating'),
+                'ratingdate'=> new external_value(PARAM_INT),
+                'ratingvalue'=> new external_value(PARAM_INT),
             ])
         );
     }
