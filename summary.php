@@ -148,7 +148,6 @@ $records = $DB->get_records_sql("
         ON m.userid = n.userid
         AND m.courseid = n.courseid
         AND m.pageid = n.pageid
-        AND m.chapterid = n.chapterid
     LEFT JOIN {course} c ON c.id = m.courseid
     WHERE m.userid = :userid " . ($course ? "AND m.courseid = :courseid" : "") . "
 ", $params);
