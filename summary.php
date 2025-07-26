@@ -58,6 +58,8 @@ if (isguestuser()) {
 // calendar preparation
 $PAGE->requires->css(new moodle_url('https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css'));
 $PAGE->requires->js(new moodle_url('https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'), true);
+$PAGE->requires->css('/blocks/revisionmanager/styles.css');
+
 //-------
 
 // Output starts.
@@ -132,7 +134,7 @@ $table->out(40, true);
 # calendar 
 // Get events for calendar.
 $records = $DB->get_records_sql("
-    SELECT m.pageurl, m.pagetitle, n.nextreview, c.shortname AS coursename
+    SELECT m.pageurl, m.pagetitle, n.nextreview, m.ratingvalue, c.shortname AS coursename
     FROM {block_revisionmanager_ratings} m
     INNER JOIN (
         SELECT userid, courseid, pageid, chapterid, MAX(ratingdate) AS max_ratingdate
@@ -153,6 +155,8 @@ $records = $DB->get_records_sql("
     WHERE m.userid = :userid " . ($course ? "AND m.courseid = :courseid" : "") . "
 ", $params);
 
+
+
 $events = [];
 foreach ($records as $record) {
     if (!empty($record->nextreview)) {
@@ -160,7 +164,8 @@ foreach ($records as $record) {
             'title' => $record->coursename . ' - ' . $record->pagetitle,
             'start' => date('Y-m-d', $record->nextreview),
             'allDay' => true,
-            'url' => $record->pageurl
+            'url' => $record->pageurl,
+            'classNames' => ['bg-rating-' . (int) $record->ratingvalue]
         ];
     }
 }
@@ -170,20 +175,35 @@ $eventsjson = json_encode($events);
 
 // Calendar container.
 echo html_writer::tag('div', '', ['id' => 'calendar', 'style' => 'max-width: 900px; margin: 50px auto;']);
+echo html_writer::tag('div', '', ['id' => 'event-list', 'style' => 'max-width: 900px; margin: 30px auto; padding: 10px;']);
+
+
 
 // Calendar initialization script.
 $calendarjs = <<<JS
     document.addEventListener('DOMContentLoaded', function () {
         const calendarEl = document.getElementById('calendar');
+        const eventListEl = document.getElementById('event-list'); // Moved here, before usage
+
         const calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
             height: 600,
             headerToolbar: {
                 left: 'prev,next today',
                 center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                right: 'dayGridMonth,timeGridWeek'
             },
-            events: $eventsjson
+            events: $eventsjson,
+            eventDidMount: function(info) {
+                // Append each event to the event list
+                const a = document.createElement('a');
+                a.href = info.event.url || '#';
+                a.textContent = info.event.title + ' (' + info.event.startStr + ')';
+                a.style.display = 'block';
+                a.style.marginBottom = '5px';
+                if (!info.event.url) a.onclick = e => e.preventDefault();
+                if (eventListEl) eventListEl.appendChild(a); // only if element exists
+            }
         });
         calendar.render();
     });
