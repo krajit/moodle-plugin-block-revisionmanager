@@ -1,0 +1,28 @@
+<div class="container">
+<h3 style="">List View</h3>
+<table class="generaltable" style="width: 90%; margin: 0 auto;">
+    <thead>
+        <tr>
+            <th>Course</th>
+            <th>Page</th>
+            <th>Next Review</th>
+            <th>Rating</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#tabledata}}
+        <tr>
+            <td>{{coursename}}</td>
+            <td><a href="{{pageurl}}" target="_blank">{{pagename}}</a></td>
+            <td>{{nextreview}}</td>
+            <td>{{rating}}</td>
+        </tr>
+        {{/tabledata}}
+        {{^tabledata}}
+        <tr>
+            <td colspan="4" style="text-align:center;">No entries found.</td>
+        </tr>
+        {{/tabledata}}
+    </tbody>
+</table>
+</div>

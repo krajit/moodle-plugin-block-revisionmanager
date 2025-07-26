@@ -98,37 +98,35 @@ if ($course) {
 //     $params
 // );
 
-$table->set_sql(
-    "m.id, m.courseid, m.timemodified, m.userid, m.pageurl, n.nextreview, m.pagetitle,
-    m.ratingvalue, m.ratingdate,
-    c.shortname AS coursename {$userfieldssql->selects}",
-    "{block_revisionmanager_ratings} m
-     INNER JOIN (
-         SELECT userid, courseid, pageid, chapterid, MAX(ratingdate) AS max_ratingdate
-         FROM {block_revisionmanager_ratings}
-         GROUP BY userid, courseid, pageid, chapterid
-     ) latest ON
-         latest.userid = m.userid AND
-         latest.courseid = m.courseid AND
-         latest.pageid = m.pageid AND
-         latest.chapterid = m.chapterid AND
-         latest.max_ratingdate = m.ratingdate
-     LEFT JOIN {user} u ON u.id = m.userid
-     LEFT JOIN {course} c ON c.id = m.courseid
-     JOIN {block_revisionmanager_nextreview} n
-         ON m.userid = n.userid
-         AND m.courseid = n.courseid
-         AND m.pageid = n.pageid
-         AND m.chapterid = n.chapterid",
-    $where,
-    $params
-);
+// $table->set_sql(
+//     "m.id, m.courseid, m.timemodified, m.userid, m.pageurl, n.nextreview, m.pagetitle,
+//     m.ratingvalue, m.ratingdate,
+//     c.shortname AS coursename {$userfieldssql->selects}",
+//     "{block_revisionmanager_ratings} m
+//      INNER JOIN (
+//          SELECT userid, courseid, pageid, chapterid, MAX(ratingdate) AS max_ratingdate
+//          FROM {block_revisionmanager_ratings}
+//          GROUP BY userid, courseid, pageid, chapterid
+//      ) latest ON
+//          latest.userid = m.userid AND
+//          latest.courseid = m.courseid AND
+//          latest.pageid = m.pageid AND
+//          latest.chapterid = m.chapterid AND
+//          latest.max_ratingdate = m.ratingdate
+//      LEFT JOIN {user} u ON u.id = m.userid
+//      LEFT JOIN {course} c ON c.id = m.courseid
+//      JOIN {block_revisionmanager_nextreview} n
+//          ON m.userid = n.userid
+//          AND m.courseid = n.courseid
+//          AND m.pageid = n.pageid
+//          AND m.chapterid = n.chapterid",
+//     $where,
+//     $params
+// );
 
-
-
-$table->sortable(true, 'nextreview', SORT_DESC);
-$table->define_baseurl($PAGE->url);
-$table->out(40, true);
+// $table->sortable(true, 'nextreview', SORT_DESC);
+// $table->define_baseurl($PAGE->url);
+// $table->out(40, true);
 
 
 # calendar 
@@ -158,6 +156,9 @@ $records = $DB->get_records_sql("
 
 
 $events = [];
+$tabledata = [];
+
+
 foreach ($records as $record) {
     if (!empty($record->nextreview)) {
         $events[] = [
@@ -167,6 +168,14 @@ foreach ($records as $record) {
             'url' => $record->pageurl,
             'classNames' => ['bg-rating-' . (int) $record->ratingvalue]
         ];
+
+        $tabledata[] = [
+        'coursename' => $record->coursename,
+        'pagename' => $record->pagetitle,
+        'pageurl' => $record->pageurl,
+        'nextreview' => userdate($record->nextreview,'%B %d'),
+        'rating' => $record->ratingvalue
+    ];
     }
 }
 $eventsjson = json_encode($events);
@@ -175,15 +184,11 @@ $eventsjson = json_encode($events);
 
 // Calendar container.
 echo html_writer::tag('div', '', ['id' => 'calendar', 'style' => 'max-width: 900px; margin: 50px auto;']);
-echo html_writer::tag('div', '', ['id' => 'event-list', 'style' => 'max-width: 900px; margin: 30px auto; padding: 10px;']);
-
-
 
 // Calendar initialization script.
 $calendarjs = <<<JS
     document.addEventListener('DOMContentLoaded', function () {
         const calendarEl = document.getElementById('calendar');
-        const eventListEl = document.getElementById('event-list'); // Moved here, before usage
 
         const calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
@@ -193,23 +198,15 @@ $calendarjs = <<<JS
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek'
             },
-            events: $eventsjson,
-            eventDidMount: function(info) {
-                // Append each event to the event list
-                const a = document.createElement('a');
-                a.href = info.event.url || '#';
-                a.textContent = info.event.title + ' (' + info.event.startStr + ')';
-                a.style.display = 'block';
-                a.style.marginBottom = '5px';
-                if (!info.event.url) a.onclick = e => e.preventDefault();
-                if (eventListEl) eventListEl.appendChild(a); // only if element exists
-            }
+            events: $eventsjson
         });
         calendar.render();
     });
 JS;
 
 $PAGE->requires->js_init_code($calendarjs);
+
+echo $OUTPUT->render_from_template('block_revisionmanager/summary_table', ['tabledata' => $tabledata]);
 
 
 // Output footer.
