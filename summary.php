@@ -36,14 +36,14 @@ $course = $courseid ? $DB->get_record('course', ['id' => $courseid], '*', IGNORE
 if ($course) {
     $coursecontext = context_course::instance($course->id);
     $PAGE->set_context($coursecontext);
-     $PAGE->set_course($course);
+    $PAGE->set_course($course);
     $PAGE->set_pagelayout('incourse');
     $PAGE->set_heading(format_string($course->fullname, true, ['context' => $coursecontext]));
     navigation_node::override_active_url(new moodle_url('/course/view.php', ['id' => $course->id]));
 } else {
     $PAGE->set_context(context_system::instance());
     $PAGE->set_pagelayout('report');
-//    $PAGE->set_heading(get_string('summary', 'block_revisionmanager'));
+    //    $PAGE->set_heading(get_string('summary', 'block_revisionmanager'));
 }
 
 // Page URL and metadata.
@@ -54,6 +54,11 @@ require_login();
 if (isguestuser()) {
     throw new moodle_exception('noguest');
 }
+
+// calendar preparation
+$PAGE->requires->css(new moodle_url('https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css'));
+$PAGE->requires->js(new moodle_url('https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'), true);
+//-------
 
 // Output starts.
 echo $OUTPUT->header();
@@ -66,7 +71,7 @@ $userfieldssql = $userfields->get_sql('u');
 // Build table object.
 $table = new pageslist($USER->id);
 
-$userid = (int)$USER->id;
+$userid = (int) $USER->id;
 $where = "m.userid = :userid";
 $params = ['userid' => $userid];
 
@@ -122,6 +127,70 @@ $table->set_sql(
 $table->sortable(true, 'nextreview', SORT_DESC);
 $table->define_baseurl($PAGE->url);
 $table->out(40, true);
+
+
+# calendar 
+// Get events for calendar.
+$records = $DB->get_records_sql("
+    SELECT m.pageurl, m.pagetitle, n.nextreview, c.shortname AS coursename
+    FROM {block_revisionmanager_ratings} m
+    INNER JOIN (
+        SELECT userid, courseid, pageid, chapterid, MAX(ratingdate) AS max_ratingdate
+        FROM {block_revisionmanager_ratings}
+        GROUP BY userid, courseid, pageid, chapterid
+    ) latest ON
+        latest.userid = m.userid AND
+        latest.courseid = m.courseid AND
+        latest.pageid = m.pageid AND
+        latest.chapterid = m.chapterid AND
+        latest.max_ratingdate = m.ratingdate
+    JOIN {block_revisionmanager_nextreview} n
+        ON m.userid = n.userid
+        AND m.courseid = n.courseid
+        AND m.pageid = n.pageid
+        AND m.chapterid = n.chapterid
+    LEFT JOIN {course} c ON c.id = m.courseid
+    WHERE m.userid = :userid " . ($course ? "AND m.courseid = :courseid" : "") . "
+", $params);
+
+$events = [];
+foreach ($records as $record) {
+    if (!empty($record->nextreview)) {
+        $events[] = [
+            'title' => $record->coursename . ' - ' . $record->pagetitle,
+            'start' => date('Y-m-d', $record->nextreview),
+            'allDay' => true,
+            'url' => $record->pageurl
+        ];
+    }
+}
+$eventsjson = json_encode($events);
+
+
+
+// Calendar container.
+echo html_writer::tag('div', '', ['id' => 'calendar', 'style' => 'max-width: 900px; margin: 50px auto;']);
+
+// Calendar initialization script.
+$calendarjs = <<<JS
+    document.addEventListener('DOMContentLoaded', function () {
+        const calendarEl = document.getElementById('calendar');
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            height: 600,
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            events: $eventsjson
+        });
+        calendar.render();
+    });
+JS;
+
+$PAGE->requires->js_init_code($calendarjs);
+
 
 // Output footer.
 echo $OUTPUT->footer();
