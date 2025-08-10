@@ -42,6 +42,12 @@ class block_revisionmanager extends block_base {
     public function get_content() {
         global $OUTPUT, $PAGE, $COURSE, $DB;
 
+        // Show blank if not logged in or is a guest user.
+        if (!isloggedin() || isguestuser()) {
+            return null;
+        }
+
+
         // Block only visible on mod_lesson view.php pages.
         // TODO: Extend this block to be visible on other activity pages
         if (($PAGE->cm->modname !== 'page') && ($PAGE->cm->modname !== 'book')) {
