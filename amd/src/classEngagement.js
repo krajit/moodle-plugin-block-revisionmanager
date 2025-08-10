@@ -1,6 +1,18 @@
 define(['core/modal_factory'], function(ModalFactory) {
     return {
         init: function () {
+
+            const container = document.querySelector('.bar-container');
+            if (!container) {
+                return;
+            }
+
+            const isTeacher = container.getAttribute('data-isteacher') === '1';
+
+            if (!isTeacher) {
+                return; // Don't attach click events for non-teachers
+            }
+
             document.querySelectorAll('.segment').forEach(segment => {
                 segment.addEventListener('click', async function () {
                     const json = this.getAttribute('data-students');

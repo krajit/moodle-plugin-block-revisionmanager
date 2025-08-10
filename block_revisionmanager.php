@@ -48,6 +48,9 @@ class block_revisionmanager extends block_base {
         }
 
 
+        $context = context_course::instance($COURSE->id);
+        $isteacher = has_capability('moodle/course:update', $context);
+
         // Block only visible on mod_lesson view.php pages.
         // TODO: Extend this block to be visible on other activity pages
         if (($PAGE->cm->modname !== 'page') && ($PAGE->cm->modname !== 'book')) {
@@ -98,6 +101,7 @@ class block_revisionmanager extends block_base {
             $pageid = $PAGE->cm->id;
             $classdata = block_revisionmanager_get_class_engagement_data($COURSE->id, $pageid, $chapterid);
            
+            $classdata['isteacher'] = $isteacher;
             $text .= $OUTPUT->render_from_template('block_revisionmanager/classtracker',$classdata);
             $this->content->text = $text;
         }
