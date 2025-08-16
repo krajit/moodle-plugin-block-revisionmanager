@@ -30,3 +30,7 @@ $string['navigationlabel'] = 'Revision Dashboard';
 $string['summary'] = 'Revision Summary Table';
 
 $string['event_rating_saved'] = 'Students rates himself';
+
+$string['bookchapters'] = 'Book Chapters';
+$string['nobookchapters'] = 'No book chapters found in this course.';
+$string['viewchapter'] = 'View';
