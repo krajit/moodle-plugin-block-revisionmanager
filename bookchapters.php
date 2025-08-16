@@ -39,12 +39,36 @@ foreach ($books as $book) {
         $params = ['chapterid' => $ch->id, 'userid' => $USER->id];
         $yourrating = $DB->get_field_sql($sql, $params);
 
+        $sql = "SELECT COUNT(*) 
+          FROM (
+                SELECT r.userid, r.ratingvalue,
+                       ROW_NUMBER() OVER (PARTITION BY r.userid ORDER BY r.ratingdate DESC, r.timemodified DESC) AS rn
+                  FROM {block_revisionmanager_ratings} r
+                 WHERE r.chapterid = :chapterid
+               ) ranked
+         WHERE rn = 1 AND ratingvalue = :rating";
+
+        $numusers0 = $DB->get_field_sql($sql, ['chapterid' => $ch->id, 'rating' => 0]);
+        $numusers1 = $DB->get_field_sql($sql, ['chapterid' => $ch->id, 'rating' => 1]);
+        $numusers2 = $DB->get_field_sql($sql, ['chapterid' => $ch->id, 'rating' => 2]);
+        $numusers3 = $DB->get_field_sql($sql, ['chapterid' => $ch->id, 'rating' => 3]);
+        $numusers4 = $DB->get_field_sql($sql, ['chapterid' => $ch->id, 'rating' => 4]);
+        $numusers5 = $DB->get_field_sql($sql, ['chapterid' => $ch->id, 'rating' => 5]);
+
+
+
         $chapterslist[] = [
             'bookname' => $book->bookname,
             'chaptertitle' => $ch->title,
             'chapterid' => $ch->id,
             'viewurl' => new moodle_url('/mod/book/view.php', ['id' => $book->cmid, 'chapterid' => $ch->id]),
-            'yourrating' => $yourrating ?? '-' // dash if no rating
+            'yourrating' => $yourrating ?? '-', // dash if no rating
+            'numusers0' => $numusers0 ?? '-',
+            'numusers1' => $numusers1 ?? '-',
+            'numusers2' => $numusers2 ?? '-',
+            'numusers3' => $numusers3 ?? '-',
+            'numusers4' => $numusers4 ?? '-',
+            'numusers5' => $numusers5 ?? '-',
         ];
     }
 }
@@ -64,13 +88,19 @@ if (empty($chapterslist)) {
 
     $table = new html_table();
     $table->id = 'chapterTable';
-    $table->head = ['Book Name', 'Chapter Title', 'Your Rating'];
+    $table->head = ['Book Name', 'Chapter Title', 'Your Rating', 'num0','num1','num2','num3','num4','num5'];
 
     foreach ($chapterslist as $row) {
         $table->data[] = [
             format_string($row['bookname']),
             html_writer::link($row['viewurl'], format_string($row['chaptertitle'])),
-            $row['yourrating']
+            $row['yourrating'],
+            $row['numusers0'],
+            $row['numusers1'],
+            $row['numusers2'],
+            $row['numusers3'],
+            $row['numusers4'],
+            $row['numusers5'],
         ];
     }
 
