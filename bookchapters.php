@@ -8,6 +8,10 @@ $course = get_course($courseid);
 $context = context_course::instance($courseid);
 require_capability('moodle/course:view', $context);
 
+$enrolledusers = get_enrolled_users($context, '', 0, 'u.id');
+$numUsers = count($enrolledusers);
+
+
 $PAGE->set_url(new moodle_url('/blocks/revisionmanager/bookchapters.php', ['courseid' => $courseid]));
 $PAGE->set_pagelayout('standard');
 $PAGE->set_title(get_string('bookchapters', 'block_revisionmanager'));
@@ -23,6 +27,7 @@ global $DB, $USER;
  */
 function rm_render_distribution_bar(array $counts): string {
     $labels = [
+        -1 => 'No Rating',
         0 => 'Rating 0',
         1 => 'Rating 1',
         2 => 'Rating 2',
@@ -30,14 +35,17 @@ function rm_render_distribution_bar(array $counts): string {
         4 => 'Rating 4',
         5 => 'Rating 5',
     ];
-    $total = 0;
-    for ($i = 0; $i <= 5; $i++) {
-        $total += (int)($counts[$i] ?? 0);
-    }
+    // $total = 0;
+    // for ($i = 0; $i <= 5; $i++) {
+    //     $total += (int)($counts[$i] ?? 0);
+    // }
+
+    global $numUsers;
+    $total = $numUsers;
 
     $segments = '';
     if ($total > 0) {
-        for ($i = 0; $i <= 5; $i++) {
+        for ($i = -1; $i <= 5; $i++) {
             $val = (int)($counts[$i] ?? 0);
             $pct = $val > 0 ? round(($val / $total) * 100, 2) : 0;
             if ($pct <= 0) continue;
@@ -101,6 +109,7 @@ foreach ($books as $book) {
         $numusers3 = $DB->get_field_sql($sql, ['chapterid' => $ch->id, 'rating' => 3]);
         $numusers4 = $DB->get_field_sql($sql, ['chapterid' => $ch->id, 'rating' => 4]);
         $numusers5 = $DB->get_field_sql($sql, ['chapterid' => $ch->id, 'rating' => 5]);
+        $numusersEmpty = $numUsers - ($numusers0 + $numusers1 + $numusers2 + $numusers3 + $numusers4 + $numusers5);
 
         $chapterslist[] = [
             'bookname' => $book->bookname,
@@ -108,6 +117,7 @@ foreach ($books as $book) {
             'chapterid' => $ch->id,
             'viewurl' => new moodle_url('/mod/book/view.php', ['id' => $book->cmid, 'chapterid' => $ch->id]),
             'yourrating' => $yourrating ?? '-', // dash if no rating
+            'numusersEmpty' => (int)($numusersEmpty ?? 0),
             'numusers0' => (int)($numusers0 ?? 0),
             'numusers1' => (int)($numusers1 ?? 0),
             'numusers2' => (int)($numusers2 ?? 0),
@@ -133,6 +143,7 @@ echo html_writer::tag('style', <<<CSS
 }
 .rm-seg { display:block; height:100%; }
 .rm-empty { display:block; width:100%; height:100%; background:#ececec; }
+.rm--1 { background:#ececec; } 
 .rm-0 { background:#b91c1c; } /* red-700 */
 .rm-1 { background:#dc2626; } /* red-600 */
 .rm-2 { background:#f59e0b; } /* amber-500 */
@@ -158,6 +169,7 @@ if (empty($chapterslist)) {
 
     // Legend (optional)
     echo html_writer::tag('div',
+        '<span><i class="rm-dot rm--1"></i>Empty</span>'.
         '<span><i class="rm-dot rm-0"></i>0</span>'.
         '<span><i class="rm-dot rm-1"></i>1</span>'.
         '<span><i class="rm-dot rm-2"></i>2</span>'.
@@ -169,10 +181,13 @@ if (empty($chapterslist)) {
 
     $table = new html_table();
     $table->id = 'chapterTable';
-    $table->head = ['Book Name', 'Chapter Title', 'Your Rating', 'num0','num1','num2','num3','num4','num5', 'Distribution (0→5)'];
+    $table->head = ['Book Name', 'Chapter Title', 'Your Rating', 
+    #'num0','num1','num2','num3','num4','num5', 
+    'Distribution (0→5)'];
 
     foreach ($chapterslist as $row) {
         $counts = [
+            -1 => $row['numusersEmpty'],
             0 => $row['numusers0'],
             1 => $row['numusers1'],
             2 => $row['numusers2'],
@@ -186,12 +201,12 @@ if (empty($chapterslist)) {
             format_string($row['bookname']),
             html_writer::link($row['viewurl'], format_string($row['chaptertitle'])),
             $row['yourrating'],
-            $row['numusers0'],
-            $row['numusers1'],
-            $row['numusers2'],
-            $row['numusers3'],
-            $row['numusers4'],
-            $row['numusers5'],
+            // $row['numusers0'],
+            // $row['numusers1'],
+            // $row['numusers2'],
+            // $row['numusers3'],
+            // $row['numusers4'],
+            // $row['numusers5'],
             $barhtml,
         ];
     }
