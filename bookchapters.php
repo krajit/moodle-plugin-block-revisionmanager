@@ -52,9 +52,24 @@ function rm_render_distribution_bar(array $counts): string {
 
             // Title/tooltip showing exact value and percentage.
             $title = $labels[$i] . ': ' . $val . ' (' . $pct . '%)';
+            
+            // Map rating → CSS class (from your styles.css)
+            $classmap = [
+                -1 => 'bg-rating--1',       // No Rating
+                0  => 'bg-rating-0',   // gray
+                1  => 'bg-rating-1',   // red
+                2  => 'bg-rating-2',   // orange
+                3  => 'bg-rating-3',   // yellow
+                4  => 'bg-rating-4',   // light green
+                5  => 'bg-rating-5',   // bright green
+            ];
+            $class = $classmap[$i] ?? 'bg-grey';
+                        
+            
             $segments .= html_writer::tag('span', '',
                 [
-                    'class' => 'rm-seg rm-' . $i,
+                    // 'class' => 'rm-seg rm-' . $i,
+                    'class' => 'segment ' . $class,
                     'style' => "width: {$pct}%;",
                     'title' => $title,
                     'aria-label' => $title,
@@ -142,14 +157,7 @@ echo html_writer::tag('style', <<<CSS
   border: 1px solid #e2e8f0;
 }
 .rm-seg { display:block; height:100%; }
-.rm-empty { display:block; width:100%; height:100%; background:#ececec; }
-.rm--1 { background:#ececec; } 
-.rm-0 { background:#b91c1c; } /* red-700 */
-.rm-1 { background:#dc2626; } /* red-600 */
-.rm-2 { background:#f59e0b; } /* amber-500 */
-.rm-3 { background:#10b981; } /* emerald-500 */
-.rm-4 { background:#3b82f6; } /* blue-500 */
-.rm-5 { background:#7c3aed; } /* violet-600 */
+.rm-empty { display:block; width:100%; height:100%; background:#ececec; }.rm--1 { background:#ececec; } 
 
 .rm-legend { display:flex; gap:10px; align-items:center; margin:8px 0 14px; font-size:12px; color:#475569; }
 .rm-legend span { display:inline-flex; align-items:center; gap:6px; }
@@ -167,23 +175,22 @@ if (empty($chapterslist)) {
         'style' => 'margin-bottom:10px; padding:5px; width:300px;'
     ]);
 
-    // Legend (optional)
     echo html_writer::tag('div',
-        '<span><i class="rm-dot rm--1"></i>Empty</span>'.
-        '<span><i class="rm-dot rm-0"></i>0</span>'.
-        '<span><i class="rm-dot rm-1"></i>1</span>'.
-        '<span><i class="rm-dot rm-2"></i>2</span>'.
-        '<span><i class="rm-dot rm-3"></i>3</span>'.
-        '<span><i class="rm-dot rm-4"></i>4</span>'.
-        '<span><i class="rm-dot rm-5"></i>5</span>',
+        '<span><i class="rm-dot bg-rating--1"></i>Empty</span>'.
+        '<span><i class="rm-dot bg-rating-0"></i>0</span>'.
+        '<span><i class="rm-dot bg-rating-1"></i>1</span>'.
+        '<span><i class="rm-dot bg-rating-2"></i>2</span>'.
+        '<span><i class="rm-dot bg-rating-3"></i>3</span>'.
+        '<span><i class="rm-dot bg-rating-4"></i>4</span>'.
+        '<span><i class="rm-dot bg-rating-5"></i>5</span>',
         ['class' => 'rm-legend']
     );
 
     $table = new html_table();
     $table->id = 'chapterTable';
-    $table->head = ['Book Name', 'Chapter Title', 'Your Rating', 
+    $table->head = ['Book Name', 'Chapter Title', 'Self Rating', 
     #'num0','num1','num2','num3','num4','num5', 
-    'Distribution (0→5)'];
+    'Class Partipation'];
 
     foreach ($chapterslist as $row) {
         $counts = [
