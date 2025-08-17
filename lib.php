@@ -56,5 +56,18 @@ function block_revisionmanager_extend_navigation_course(navigation_node $coursen
             null,
             new pix_icon('i/report', '') // optional icon
         );
+
+        // add block for course class performance
+        $url = new moodle_url('/blocks/revisionmanager/bookchapters.php', ['courseid' => $course->id]);
+        $coursenode->add(
+            get_string('classpartipationlabel', 'block_revisionmanager'),
+            $url,
+            navigation_node::TYPE_CUSTOM,
+            null,
+            null,
+            new pix_icon('i/report', '') // optional icon
+        );
+
+
     }
 }

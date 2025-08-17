@@ -13,7 +13,22 @@ $numUsers = count($enrolledusers);
 
 
 $PAGE->set_url(new moodle_url('/blocks/revisionmanager/bookchapters.php', ['courseid' => $courseid]));
-$PAGE->set_pagelayout('standard');
+
+// Determine context and layout.
+if ($course) {
+    $coursecontext = context_course::instance($course->id);
+    $PAGE->set_context($coursecontext);
+    $PAGE->set_course($course);
+    $PAGE->set_pagelayout('incourse');
+    $PAGE->set_heading(format_string($course->fullname, true, ['context' => $coursecontext]));
+    navigation_node::override_active_url(new moodle_url('/course/view.php', ['id' => $course->id]));
+} else {
+    $PAGE->set_context(context_system::instance());
+    $PAGE->set_pagelayout('report');
+    //    $PAGE->set_heading(get_string('summary', 'block_revisionmanager'));
+}
+
+
 $PAGE->set_title(get_string('bookchapters', 'block_revisionmanager'));
 $PAGE->set_heading($course->fullname);
 

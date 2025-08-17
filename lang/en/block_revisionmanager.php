@@ -34,3 +34,4 @@ $string['event_rating_saved'] = 'Students rates himself';
 $string['bookchapters'] = 'Book Chapters';
 $string['nobookchapters'] = 'No book chapters found in this course.';
 $string['viewchapter'] = 'View';
+$string['classpartipationlabel'] = 'Class Participation Dashboard';
