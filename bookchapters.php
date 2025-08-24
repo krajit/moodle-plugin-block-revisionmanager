@@ -6,7 +6,7 @@ $courseid = required_param('courseid', PARAM_INT);
 
 $course = get_course($courseid);
 $context = context_course::instance($courseid);
-require_capability('moodle/course:view', $context);
+require_capability('moodle/course:viewoverview', $context);
 
 $enrolledusers = get_enrolled_users($context, '', 0, 'u.id');
 $numUsers = count($enrolledusers);
