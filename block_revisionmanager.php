@@ -40,7 +40,7 @@ class block_revisionmanager extends block_base {
      * @return stdClass The block contents.
      */
     public function get_content() {
-        global $OUTPUT, $PAGE, $COURSE, $DB;
+        global $OUTPUT, $PAGE, $COURSE, $DB, $USER;
 
         // Show blank if not logged in or is a guest user.
         if (!isloggedin() || isguestuser()) {
@@ -119,6 +119,10 @@ class block_revisionmanager extends block_base {
         $PAGE->requires->css('/blocks/revisionmanager/styles.css');
 
         $PAGE->requires->js_call_amd('block_revisionmanager/classEngagement', 'init', []);
+
+
+        $params2 = [];
+        $PAGE->requires->js_call_amd('block_revisionmanager/inject', 'init',[$params2]);
         
         return $this->content;
     }

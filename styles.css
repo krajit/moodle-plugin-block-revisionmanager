@@ -81,3 +81,8 @@
 .bg-green      { background-color: green; }
 
 
+.revision-bar {
+    background: #eef;
+    padding: 10px;
+    margin-bottom: 10px;
+}
