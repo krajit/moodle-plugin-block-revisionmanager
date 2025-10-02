@@ -96,13 +96,13 @@ class block_revisionmanager extends block_base {
             $this->content->text = $this->config->text;
         } else {
 
-            $text = $OUTPUT->render_from_template('block_revisionmanager/learningtracker',
-                        ['dashboardurl'=>$url]);
+            // $text = $OUTPUT->render_from_template('block_revisionmanager/learningtracker',
+            //             ['dashboardurl'=>$url]);
             $pageid = $PAGE->cm->id;
             $classdata = block_revisionmanager_get_class_engagement_data($COURSE->id, $pageid, $chapterid);
            
             $classdata['isteacher'] = $isteacher;
-            $text .= $OUTPUT->render_from_template('block_revisionmanager/classtracker',$classdata);
+            $text = $OUTPUT->render_from_template('block_revisionmanager/classtracker',$classdata);
             $this->content->text = $text;
         }
 
@@ -114,15 +114,14 @@ class block_revisionmanager extends block_base {
         ];
        
 
-        $PAGE->requires->js_call_amd('block_revisionmanager/databasecommunicator', 'init', [$params]);
+        // $PAGE->requires->js_call_amd('block_revisionmanager/databasecommunicator', 'init', [$params]);
         $PAGE->requires->js_call_amd('block_revisionmanager/boooktocmarker', 'init', [$params]);
         $PAGE->requires->css('/blocks/revisionmanager/styles.css');
 
-        $PAGE->requires->js_call_amd('block_revisionmanager/classEngagement', 'init', []);
+        // $PAGE->requires->js_call_amd('block_revisionmanager/classEngagement', 'init', []);
 
 
-        $params2 = [];
-        $PAGE->requires->js_call_amd('block_revisionmanager/inject', 'init',[$params2]);
+        $PAGE->requires->js_call_amd('block_revisionmanager/inject', 'init',[$params]);
         
         return $this->content;
     }
